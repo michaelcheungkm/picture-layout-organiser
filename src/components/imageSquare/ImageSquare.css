@@ -1,0 +1,8 @@
+.image-square {
+  display: inherit;
+}
+
+.image-square img {
+  width: 10vw;
+  display: inline;
+}
