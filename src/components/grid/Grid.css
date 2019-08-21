@@ -1,4 +1,11 @@
+.grid {
+  display: table;
+}
+
+.grid-row {
+  text-align: left;
+}
+
 .grid-item {
-  padding: 2vmin;
-  display: inline;
+  display: inline-block;
 }

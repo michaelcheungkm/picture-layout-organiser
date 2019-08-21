@@ -1,3 +1,5 @@
 #main-grid {
+  display: table;
   margin: auto;
+  text-align: center;
 }

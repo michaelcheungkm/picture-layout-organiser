@@ -11,12 +11,14 @@ import img4 from './example_images/4.png';
 import img5 from './example_images/5.png';
 var exampleImages = [img1, img2, img3, img4, img5];
 
+const NUM_COLS = 3;
+
 class App extends React.Component {
   render() {
     return (
       <div id='main-grid' className='App'>
         <Grid
-          cols={3}
+          cols={NUM_COLS}
           content={exampleImages.map(i => <ImageSquare image={i} />)}
         />
       </div>

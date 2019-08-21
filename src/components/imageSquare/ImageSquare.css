@@ -1,8 +1,19 @@
 .image-square {
-  display: inherit;
+  display: inline-block;
+  width: 20vw;
+  height: 20vw;
+  padding: 1vmin;
 }
 
 .image-square img {
-  width: 10vw;
-  display: inline;
+  width: 100%;
+  height: 100%;
+  border: 1px solid red;
+}
+
+@media screen and (max-aspect-ratio: 8/10) {
+  .image-square {
+    width: 30vw;
+    height: 30vw;
+  }
 }

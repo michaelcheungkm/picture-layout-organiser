@@ -5,17 +5,21 @@ class Grid extends React.Component {
 
   render() {
 
-    var items=[];
-    for(var i = 0; i<this.props.content.length; i++) {
-      var cont = <span className='grid-item'>{this.props.content[i]}</span>
-      items.push(cont);
-      if (i % 3 == 2) {
-        items.push(<br/>);
-      }
+    var rows=[];
+    for(var i = 0; i < this.props.content.length; i += this.props.cols) {
+      rows.push(
+        <div className='grid-row'>
+          {this.props.content.slice(i, i + this.props.cols).map(i =>
+            <div className='grid-item'>{i}</div>
+          )}
+        </div>
+      );
     }
 
     return (
-      items
+      <div className='grid'>
+        {rows}
+      </div>
     );
   }
 }

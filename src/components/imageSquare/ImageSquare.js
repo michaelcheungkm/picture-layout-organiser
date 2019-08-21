@@ -6,7 +6,7 @@ class ImageSquare extends React.Component {
   render() {
     return (
       <div className='image-square'>
-       <img src={this.props.image} />
+        <img src={this.props.image} />
       </div>
     );
   }
