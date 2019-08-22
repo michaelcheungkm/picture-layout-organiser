@@ -1,5 +1,6 @@
 .grid {
   display: table;
+  font-size: 0;
 }
 
 .grid-row {
