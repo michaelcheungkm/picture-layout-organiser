@@ -1,7 +1,7 @@
 .image-square {
   display: inline-block;
-  width: 20vw;
-  height: 20vw;
+  width: 15vw;
+  height: 15vw;
   margin: 1vmin;
   overflow: hidden;
   border: 1px solid red;
@@ -9,9 +9,9 @@
   background-size: cover;
 }
 
-@media screen and (max-asp  ect-ratio: 8/10) {
+@media screen and (max-aspect-ratio: 9/10) {
   .image-square {
-    width: 30vw;
-    height: 30vw;
+    width: 28vw;
+    height: 28vw;
   }
 }
