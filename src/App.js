@@ -20,7 +20,10 @@ class App extends Component {
       <div id='main-grid' className='App'>
         <Grid
           cols={NUM_COLS}
-          content={exampleImages.map(i => <ImageSquare image={i} />)}
+          content={exampleImages.map((img, index) => ({
+            id: index,
+            display: <ImageSquare image={img} />
+          }))}
         />
       </div>
     );

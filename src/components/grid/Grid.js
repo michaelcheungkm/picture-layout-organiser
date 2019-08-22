@@ -15,9 +15,9 @@ class Grid extends Component {
     var rows=[];
     for(var i = 0; i < this.state.content.length; i += this.props.cols) {
       rows.push(
-        <div className='grid-row'>
-          {this.state.content.slice(i, i + this.props.cols).map(i =>
-            <div className='grid-item'>{i}</div>
+        <div className='grid-row' key={i}>
+          {this.state.content.slice(i, i + this.props.cols).map(item =>
+            <div className='grid-item' key={item.id}>{item.display}</div>
           )}
         </div>
       );
