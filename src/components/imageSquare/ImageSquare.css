@@ -2,9 +2,9 @@
   display: inline-block;
   width: 15vw;
   height: 15vw;
-  margin: 1vmin;
+  margin: 0.5vmin;
   overflow: hidden;
-  border: 1px solid red;
+  border: 1px solid black;
   background-position: 50% 50%;
   background-size: cover;
 }

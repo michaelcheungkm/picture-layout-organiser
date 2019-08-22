@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {Component} from 'react';
 import './ImageSquare.css';
 
-class ImageSquare extends React.Component {
+class ImageSquare extends Component {
 
 
   render() {

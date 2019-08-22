@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import './App.css';
 
 import Grid from './components/grid/Grid.js';
@@ -14,7 +14,7 @@ var exampleImages = [img1, img2, img3, img4, img5, img6];
 
 const NUM_COLS = 3;
 
-class App extends React.Component {
+class App extends Component {
   render() {
     return (
       <div id='main-grid' className='App'>
