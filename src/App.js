@@ -9,7 +9,8 @@ import img2 from './example_images/2.png';
 import img3 from './example_images/3.png';
 import img4 from './example_images/4.png';
 import img5 from './example_images/5.png';
-var exampleImages = [img1, img2, img3, img4, img5];
+import img6 from './example_images/6.png';
+var exampleImages = [img1, img2, img3, img4, img5, img6];
 
 const NUM_COLS = 3;
 
