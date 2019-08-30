@@ -9,8 +9,14 @@ class ImageSquare extends Component {
       'backgroundImage': 'url(' + this.props.image + ')'
     }
 
+    var classString = 'image-square' + (this.props.selected ? ' selected' : '');
+
     return (
-      <div className='image-square' style={backgroundImageStyle}>
+      <div
+        className={classString}
+        style={backgroundImageStyle}
+        onClick={this.props.handleClick}
+        >
       </div>
     );
   }

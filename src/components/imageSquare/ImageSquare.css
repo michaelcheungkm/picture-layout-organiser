@@ -7,6 +7,12 @@
   border: 1px solid black;
   background-position: 50% 50%;
   background-size: cover;
+  cursor: pointer;
+  background-color: var(--color-gray-light);
+}
+
+.selected{
+  opacity: 0.35;
 }
 
 @media screen and (max-aspect-ratio: 9/10) {

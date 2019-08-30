@@ -15,18 +15,48 @@ var exampleImages = [img1, img2, img3, img4, img5, img6];
 const NUM_COLS = 3;
 
 class App extends Component {
+
+  constructor(props) {
+    super(props);
+    // TODO: Replace with backend results
+    this.state = {
+      // TODO: leave as empty when not developing
+      backendAddress: "null",
+      saved: false,
+      selectedID: -1,
+      content : exampleImages.map((img, index) => ({
+        id: index,
+        img: img,
+      }))
+    }
+  }
+
   render() {
-    return (
-      <div id='main-grid' className='App'>
+    if (this.state.backendAddress == null) {
+      // TODO: Proper no backend repsonse
+      return (
+        "No backend"
+      );
+    } else {
+      return (
+        <div id='main-grid' className='App'>
         <Grid
           cols={NUM_COLS}
-          content={exampleImages.map((img, index) => ({
-            id: index,
-            display: <ImageSquare image={img} />
+          gridContent={this.state.content.map(c => ({
+            display:
+              <ImageSquare
+                id={c.id}
+                image={c.img}
+                selected={this.state.selectedID === c.id}
+                handleClick={function(){
+                  this.setState({selectedID: this.state.selectedID === c.id ? -1 : c.id})
+                }.bind(this)}
+              />
           }))}
         />
-      </div>
-    );
+        </div>
+      );
+    }
   }
 }
 
