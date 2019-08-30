@@ -13,6 +13,7 @@ import img6 from './example_images/6.png';
 var exampleImages = [img1, img2, img3, img4, img5, img6];
 
 const NUM_COLS = 3;
+const ENTER_KEY = 13;
 
 class App extends Component {
 
@@ -32,31 +33,39 @@ class App extends Component {
   }
 
   render() {
-    if (this.state.backendAddress == null) {
-      // TODO: Proper no backend repsonse
-      return (
-        "No backend"
-      );
-    } else {
-      return (
-        <div id='main-grid' className='App'>
-        <Grid
-          cols={NUM_COLS}
-          gridContent={this.state.content.map(c => ({
-            display:
-              <ImageSquare
-                id={c.id}
-                image={c.img}
-                selected={this.state.selectedID === c.id}
-                handleClick={function(){
-                  this.setState({selectedID: this.state.selectedID === c.id ? -1 : c.id})
-                }.bind(this)}
-              />
-          }))}
-        />
+    var gridContent = (
+      <div id='main-grid' className='App'>
+      <Grid
+        cols={NUM_COLS}
+        gridContent={this.state.content.map(c => ({
+          display:
+            <ImageSquare
+              id={c.id}
+              image={c.img}
+              selected={this.state.selectedID === c.id}
+              handleClick={function(){
+                this.setState({selectedID: this.state.selectedID === c.id ? -1 : c.id})
+              }.bind(this)}
+            />
+        }))}
+      />
+      </div>
+    );
+
+    return (
+      <div>
+        <div className="top-bar">
+          Backend Address:
+          <input type="text" onKeyDown={function(e){
+            if (e.keyCode === ENTER_KEY) {
+              this.setState({backendAddress: e.target.value})
+            }
+          }.bind(this)}
+          />
         </div>
-      );
-    }
+        {this.state.backendAddress !== null ? gridContent : "No backend"}
+      </div>
+    );
   }
 }
 
