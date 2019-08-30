@@ -14,6 +14,7 @@ var exampleImages = [img1, img2, img3, img4, img5, img6];
 
 const NUM_COLS = 3;
 const ENTER_KEY = 13;
+const NONE_SELECTED_ID = -1;
 
 class App extends Component {
 
@@ -24,7 +25,7 @@ class App extends Component {
       // TODO: leave as empty when not developing
       backendAddress: "null",
       saved: false,
-      selectedID: -1,
+      selectedID: NONE_SELECTED_ID,
       content : exampleImages.map((img, index) => ({
         id: index,
         img: img,
@@ -34,7 +35,7 @@ class App extends Component {
 
   render() {
     var gridContent = (
-      <div id='main-grid' className='App'>
+      <div id='main-grid' className='App' >
       <Grid
         cols={NUM_COLS}
         gridContent={this.state.content.map(c => ({
@@ -43,8 +44,8 @@ class App extends Component {
               id={c.id}
               image={c.img}
               selected={this.state.selectedID === c.id}
-              handleClick={function(){
-                this.setState({selectedID: this.state.selectedID === c.id ? -1 : c.id})
+              handleClick={function() {
+                this.setState({selectedID: this.state.selectedID === c.id ? NONE_SELECTED_ID : c.id})
               }.bind(this)}
             />
         }))}
