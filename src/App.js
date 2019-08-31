@@ -14,7 +14,7 @@ import img6 from './example_images/6.png';
 var exampleImages = [img1, img2, img3, img4, img5, img6];
 
 const NUM_COLS = 3;
-const NONE_SELECTED_ID = -1;
+const NONE_SELECTED_INDEX = -1;
 
 const ENTER_KEY = 13;
 const LEFT_KEY = 37;
@@ -34,7 +34,7 @@ class App extends Component {
       // TODO: leave as empty when not developing
       backendAddress: "null",
       saved: false,
-      selectedIndex: NONE_SELECTED_ID,
+      selectedIndex: NONE_SELECTED_INDEX,
       content : exampleImages.map(img => ({
         img: img
       }))
@@ -49,8 +49,12 @@ class App extends Component {
     document.removeEventListener("keydown", this.handleKeyDown, false);
   }
 
+  deselectSelectedItem() {
+    this.setState({selectedIndex: NONE_SELECTED_INDEX})
+  }
+
   handleKeyDown(e) {
-    if (this.state.selectedIndex !== NONE_SELECTED_ID) {
+    if (this.state.selectedIndex !== NONE_SELECTED_INDEX) {
       // TODO: replace with map
       if (e.keyCode === LEFT_KEY) {
         var indexChange = -1;
@@ -82,7 +86,11 @@ class App extends Component {
               image={c.img}
               selected={this.state.selectedIndex === index}
               handleClick={function() {
-                this.setState({selectedIndex: this.state.selectedIndex === index ? NONE_SELECTED_ID : index})
+                if (this.state.selectedIndex === index) {
+                  this.deselectSelectedItem();
+                } else {
+                  this.setState({selectedIndex: index});
+                }
               }.bind(this)}
             />
         }))}
@@ -94,12 +102,16 @@ class App extends Component {
       <div>
         <div className="top-bar">
           Backend Address:
-          <input type="text" onKeyDown={function(e){
-            // TODO: handle so that other key listener is not also triggered.
-            if (e.keyCode === ENTER_KEY) {
-              this.setState({backendAddress: e.target.value})
-            }
-          }.bind(this)}
+          <input
+            type="text"
+            onKeyDown={function(e){
+              if (e.keyCode === ENTER_KEY) {
+                this.setState({backendAddress: e.target.value})
+              }
+            }.bind(this)}
+            onFocus={function(e){
+              this.deselectSelectedItem();
+            }.bind(this)}
           />
         </div>
         {this.state.backendAddress !== null ? gridContent : "No backend"}
