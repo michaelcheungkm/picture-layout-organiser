@@ -5,6 +5,8 @@ import Grid from './components/grid/Grid.js';
 import ImageSquare from './components/imageSquare/ImageSquare.js';
 import arraySwap from './ArraySwap.js';
 
+import {listUsers} from './adapters/ManagerAdapter.js';
+
 import img1 from './example_images/1.png';
 import img2 from './example_images/2.png';
 import img3 from './example_images/3.png';
@@ -33,7 +35,7 @@ class App extends Component {
     this.state = {
       // TODO: leave as empty when not developing
       backendAddress: "null",
-      saved: false,
+      users: [],
       selectedIndex: NONE_SELECTED_INDEX,
       content : exampleImages.map(img => ({
         img: img
@@ -47,10 +49,6 @@ class App extends Component {
 
   componentWillUnmount() {
     document.removeEventListener("keydown", this.handleKeyDown, false);
-  }
-
-  deselectSelectedItem() {
-    this.setState({selectedIndex: NONE_SELECTED_INDEX})
   }
 
   handleKeyDown(e) {
@@ -73,6 +71,10 @@ class App extends Component {
         selectedIndex: this.state.selectedIndex + indexChange
       });
     }
+  }
+
+  deselectSelectedItem() {
+    this.setState({selectedIndex: NONE_SELECTED_INDEX})
   }
 
   render() {
@@ -106,13 +108,21 @@ class App extends Component {
             type="text"
             onKeyDown={function(e){
               if (e.keyCode === ENTER_KEY) {
-                this.setState({backendAddress: e.target.value})
+                this.setState({backendAddress: e.target.value});
+                listUsers(e.target.value, function(users){
+                  this.setState({'users':users})
+                }.bind(this));
               }
             }.bind(this)}
             onFocus={function(e){
               this.deselectSelectedItem();
             }.bind(this)}
           />
+          <select id='account-select'>
+            {this.state.users.map(username =>
+              (<option key={username} value={username}>{username}</option>)
+            )}
+          </select>
         </div>
         {this.state.backendAddress !== null ? gridContent : "No backend"}
       </div>
