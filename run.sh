@@ -2,5 +2,4 @@ echo "Evaluating absolute working directory"
 wd=$(cat .config/directory.txt | envsubst)
 echo "$wd" > ".config/absoluteDirectory.txt"
 
-bash ./serveData.sh
-# also need to run node index.js
+bash ./serveData.sh & node index.js &
