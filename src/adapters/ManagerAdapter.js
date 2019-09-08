@@ -9,7 +9,7 @@ function createPostParams(jsonData) {
   return params;
 }
 
-function getFormattedAddress(backendAddress) {
+export function getFormattedAddress(backendAddress) {
   if (!backendAddress.toLowerCase().startsWith('http://')
     && !backendAddress.toLowerCase().startsWith('https://')) {
     return 'http://' + backendAddress;
