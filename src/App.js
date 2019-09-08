@@ -39,6 +39,7 @@ class App extends Component {
       users: [],
       selectedIndex: NONE_SELECTED_INDEX,
       content: [],
+      username: '',
       saved: true
     }
   }
@@ -54,12 +55,15 @@ class App extends Component {
   handleKeyDown(e) {
     if (this.state.selectedIndex !== NONE_SELECTED_INDEX) {
       var indexChangeMap = new Map([[LEFT_KEY, -1], [UP_KEY, -1 * NUM_COLS], [RIGHT_KEY, 1], [DOWN_KEY, NUM_COLS]]);
-
-      this.setState({
-        content: arraySwap(this.state.content, this.state.selectedIndex, this.state.selectedIndex + indexChangeMap.get(e.keyCode)),
-        selectedIndex: this.state.selectedIndex + indexChangeMap.get(e.keyCode),
-        saved: false
-      });
+      try{
+        this.setState({
+          content: arraySwap(this.state.content, this.state.selectedIndex, this.state.selectedIndex + indexChangeMap.get(e.keyCode)),
+          selectedIndex: this.state.selectedIndex + indexChangeMap.get(e.keyCode),
+          saved: false
+        });
+      } catch(err) {
+        console.log(err);
+      }
 
       // 2 seconds after last update, issue a save
       lastUpdate = Date.now();
@@ -80,7 +84,7 @@ class App extends Component {
   render() {
     var gridContent = (
       <div id='main-grid' className='App' >
-      <h1>{this.state.saved ? "Content is saved and up-to-date" : "Saving"}</h1>
+      <h2>{this.state.saved ? "Content is saved and up-to-date" : "Saving"}</h2>
       <Grid
         cols={NUM_COLS}
         gridContent={this.state.content.map((c, index) => ({
@@ -119,7 +123,7 @@ class App extends Component {
                 }.bind(this))
               }.bind(this)}
             >
-              <option value='none'>None selected</option>
+              <option value=''>None selected</option>
               {this.state.users.map(username =>
                 (<option key={username} value={username}>{username}</option>)
               )}
@@ -167,7 +171,7 @@ class App extends Component {
             </button>
           </span>
         </div>
-        {this.state.backendAddress !== null ? gridContent : "No backend"}
+        {this.state.backendAddress !== null && this.state.username !== '' ? gridContent : "No backend"}
       </div>
     );
   }

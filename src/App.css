@@ -4,6 +4,10 @@
   text-align: center;
 }
 
+#main-grid h2 {
+  font-size: 1rem;
+}
+
 .top-bar {
   background-color: var(--color-gray-light);
   width:100%;
