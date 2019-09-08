@@ -24,7 +24,7 @@ function listUsers() {
   return manager.users.map(u => u.name);
 }
 
-function createUser(name) {
+function createAccount(name) {
   var manager = readManagerSync();
 
   if (listUsers().includes(name)) {
@@ -69,7 +69,7 @@ function loadAllAndGetUserContent(username) {
 
 module.exports = {
   listUsers,
-  createUser,
+  createAccount,
   getUserContent,
   loadAllAndGetUserContent,
   saveUserContent

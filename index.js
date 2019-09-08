@@ -19,11 +19,11 @@ app.get('/listUsers', (req, res) => {
   res.send(manager.listUsers());
 });
 
-app.post('/createUser', (req, res) => {
-  console.log("Call to createUser");
+app.post('/createAccount', (req, res) => {
+  console.log("Call to createAccount");
   const { name } = req.body;
   try {
-    manager.createUser(name);
+    manager.createAccount(name);
   } catch(err) {
     res.status(422).send('Username already exists\n');
     return;
