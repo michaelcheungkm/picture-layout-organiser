@@ -53,6 +53,7 @@ function loadAllAndGetUserContent(username) {
 
   files.filter(f => f !== "manager.json")
     .filter(f => !userContentNames.includes(f))
+    .filter(f => f.toLowerCase().endsWith(".jpg") || f.toLowerCase().endsWith(".png"))
     .map(
       f => ({
         'img': f,
