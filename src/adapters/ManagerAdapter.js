@@ -48,3 +48,10 @@ export function loadAllAndGetUserContent(username, backendAddress, callback) {
   .then(res => res.json())
   .then(callback);
 }
+
+export function createAccount(newName, backendAddress, callback) {
+  const query_url = getFormattedAddress(backendAddress) + '/createAccount';
+  var postParams = createPostParams({'name': newName});
+  fetch(query_url, postParams)
+    .then(callback);
+}

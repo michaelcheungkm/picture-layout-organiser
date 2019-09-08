@@ -10,7 +10,8 @@ import {
   listUsers,
   getUserContent,
   saveUserContent,
-  loadAllAndGetUserContent
+  loadAllAndGetUserContent,
+  createAccount
   } from './adapters/ManagerAdapter.js';
 
 const NUM_COLS = 3;
@@ -28,12 +29,13 @@ class App extends Component {
 
   constructor(props) {
     super(props);
+    this.accountSelectorRef = React.createRef();
 
     this.handleKeyDown = this.handleKeyDown.bind(this);
 
     this.state = {
-      backendAddress: "null",
-      imageHostAddress: "null",
+      backendAddress: "",
+      imageHostAddress: "",
       users: [],
       selectedIndex: NONE_SELECTED_INDEX,
       content: [],
@@ -79,6 +81,41 @@ class App extends Component {
     this.setState({selectedIndex: NONE_SELECTED_INDEX})
   }
 
+  handleAccountSelect(option) {
+    if (option === 'create-new') {
+      if (this.state.backendAddress !== '') {
+        var newName = prompt("New account name");
+        if (newName !== null && newName !== "") {
+          createAccount(newName, this.state.backendAddress, function() {
+            listUsers(this.state.backendAddress, (users) => {
+              this.setState({'users': users});
+              this.accountSelectorRef.current.value = newName;
+
+              getUserContent(newName, this.state.backendAddress, function(content){
+                this.setState(
+                  {
+                    'username': newName,
+                    'content': content
+                  }
+                );
+              }.bind(this));
+            })
+          }.bind(this));
+        }
+      }
+    } else if (option !== '') {
+      var username = option;
+      getUserContent(username, this.state.backendAddress, function(content){
+        this.setState(
+          {
+            'username': username,
+            'content': content
+          }
+        );
+      }.bind(this));
+    }
+  }
+
   render() {
     var gridContent = (
       <div id='main-grid' className='App' >
@@ -103,28 +140,26 @@ class App extends Component {
       </div>
     );
 
+    var noGridContent = (
+      <div className='empty-content'>
+        Please connect backend and select an account
+      </div>
+    );
+
     return (
       <div>
         <div className="top-bar">
           <span className='account-select'>
             Account:
             <select
-              onChange={function(e){
-                var username = e.target.value;
-                getUserContent(username, this.state.backendAddress, function(content){
-                  this.setState(
-                    {
-                      'username': username,
-                      'content': content
-                    }
-                  );
-                }.bind(this))
-              }.bind(this)}
+              ref={this.accountSelectorRef}
+              onChange={(e) => this.handleAccountSelect(e.target.value)}
             >
               <option value=''>None selected</option>
               {this.state.users.map(username =>
                 (<option key={username} value={username}>{username}</option>)
               )}
+              <option value='create-new'>+ New account</option>
             </select>
           </span>
           <span className="top-bar-right">
@@ -169,7 +204,7 @@ class App extends Component {
             </button>
           </span>
         </div>
-        {this.state.backendAddress !== null && this.state.username !== '' ? gridContent : "No backend"}
+        {this.state.backendAddress !== null && this.state.username !== '' ? gridContent : noGridContent}
       </div>
     );
   }

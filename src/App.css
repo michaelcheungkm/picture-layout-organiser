@@ -8,6 +8,11 @@
   font-size: 1rem;
 }
 
+.empty-content {
+  margin: auto;
+  text-align: center;
+}
+
 .top-bar {
   background-color: var(--color-gray-light);
   width:100%;
