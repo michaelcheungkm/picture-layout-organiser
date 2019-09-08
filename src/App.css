@@ -11,14 +11,28 @@
   margin-bottom: 2vmin;
 }
 
-.top-bar input {
-  outline: none;
-  padding: 0.5vmin;
+.top-bar-right {
+  float: right;
 }
 
-#account-select {
+.top-bar-right input {
   outline: none;
   padding: 0.5vmin;
+  margin-right: 2vmin;
+}
+
+.account-select {
   margin: 0 2vmin;
-  float: right;
+}
+
+.account-select select {
+  outline: none;
+  padding: 0.5vmin;
+  background-color: white;
+}
+
+#load-all-button {
+  padding: 0.5vmin;
+  margin: 0 2vmin;
+  background-color: white;
 }

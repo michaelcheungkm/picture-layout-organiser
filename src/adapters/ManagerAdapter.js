@@ -34,3 +34,17 @@ export function getUserContent(username, backendAddress, callback) {
   .then(res => res.json())
   .then(callback);
 }
+
+export function saveUserContent(username, content, backendAddress, callback) {
+  const query_url = getFormattedAddress(backendAddress) + '/' + username + '/saveUserContent';
+  var postParams = createPostParams({'content': content});
+  fetch(query_url, postParams)
+    .then(callback);
+}
+
+export function loadAllAndGetUserContent(username, backendAddress, callback) {
+  const query_url = getFormattedAddress(backendAddress) + '/' + username + '/loadAllAndGetUserContent';
+  fetch(query_url)
+  .then(res => res.json())
+  .then(callback);
+}

@@ -5,7 +5,7 @@ import Grid from './components/grid/Grid.js';
 import ImageSquare from './components/imageSquare/ImageSquare.js';
 import arraySwap from './ArraySwap.js';
 
-import {listUsers, getUserContent} from './adapters/ManagerAdapter.js';
+import {getFormattedAddress, listUsers, getUserContent, saveUserContent, loadAllAndGetUserContent} from './adapters/ManagerAdapter.js';
 
 import img1 from './example_images/1.png';
 import img2 from './example_images/2.png';
@@ -24,6 +24,8 @@ const UP_KEY = 38;
 const RIGHT_KEY = 39;
 const DOWN_KEY = 40;
 
+var lastUpdate = 0;
+
 class App extends Component {
 
   constructor(props) {
@@ -31,15 +33,13 @@ class App extends Component {
 
     this.handleKeyDown = this.handleKeyDown.bind(this);
 
-    // TODO: Replace with backend results
     this.state = {
-      // TODO: leave as empty when not developing
       backendAddress: "null",
+      imageHostAddress: "null",
       users: [],
       selectedIndex: NONE_SELECTED_INDEX,
-      content : exampleImages.map(img => ({
-        img: img
-      }))
+      content: [],
+      saved: true
     }
   }
 
@@ -57,8 +57,19 @@ class App extends Component {
 
       this.setState({
         content: arraySwap(this.state.content, this.state.selectedIndex, this.state.selectedIndex + indexChangeMap.get(e.keyCode)),
-        selectedIndex: this.state.selectedIndex + indexChangeMap.get(e.keyCode)
+        selectedIndex: this.state.selectedIndex + indexChangeMap.get(e.keyCode),
+        saved: false
       });
+
+      // 2 seconds after last update, issue a save
+      lastUpdate = Date.now();
+      setTimeout(function(){
+        if (Date.now() - lastUpdate > 1900) {
+          saveUserContent(this.state.username, this.state.content, this.state.backendAddress, function(){
+            this.setState({'saved':true});
+          }.bind(this));
+        }
+      }.bind(this), 2000)
     }
   }
 
@@ -69,12 +80,13 @@ class App extends Component {
   render() {
     var gridContent = (
       <div id='main-grid' className='App' >
+      <h1>{this.state.saved ? "Content is saved and up-to-date" : "Saving"}</h1>
       <Grid
         cols={NUM_COLS}
         gridContent={this.state.content.map((c, index) => ({
           display:
             <ImageSquare
-              image={c.img}
+              image={getFormattedAddress(this.state.imageHostAddress) + '/' + c.img}
               selected={this.state.selectedIndex === index}
               handleClick={function() {
                 if (this.state.selectedIndex === index) {
@@ -92,40 +104,68 @@ class App extends Component {
     return (
       <div>
         <div className="top-bar">
-          Backend Address:
-          <input
+          <span className='account-select'>
+            Account:
+            <select
+              onChange={function(e){
+                var username = e.target.value;
+                getUserContent(username, this.state.backendAddress, function(content){
+                  this.setState(
+                    {
+                      'username': username,
+                      'content': content
+                    }
+                  );
+                }.bind(this))
+              }.bind(this)}
+            >
+              <option value='none'>None selected</option>
+              {this.state.users.map(username =>
+                (<option key={username} value={username}>{username}</option>)
+              )}
+            </select>
+          </span>
+          <span className="top-bar-right">
+            Backend Address:
+            <input
             type="text"
-            onKeyDown={function(e){
-              if (e.keyCode === ENTER_KEY) {
-                this.setState({backendAddress: e.target.value});
-                listUsers(e.target.value, function(users){
-                  this.setState({'users':users})
-                }.bind(this));
-              }
-            }.bind(this)}
+            onKeyDown={
+              function(e){
+                if (e.keyCode === ENTER_KEY) {
+                  this.setState({backendAddress: e.target.value});
+                  listUsers(e.target.value, function(users){
+                    this.setState({'users':users})
+                  }.bind(this));
+                }
+              }.bind(this)}
             onFocus={function(e){
               this.deselectSelectedItem();
-            }.bind(this)}
-          />
-          <select
-            id='account-select'
-            onChange={function(e){
-              var username = e.target.value;
-              getUserContent(username, this.state.backendAddress, function(content){
-                this.setState(
-                  {
-                    'username': username,
-                    'content': content
-                  }
-                );
-              }.bind(this))
-            }.bind(this)}
-          >
-            <option value='none'>None selected</option>
-            {this.state.users.map(username =>
-              (<option key={username} value={username}>{username}</option>)
-            )}
-          </select>
+              }.bind(this)}
+            />
+            Image Host Address:
+            <input
+            type="text"
+            onKeyDown={
+              function(e){
+                if (e.keyCode === ENTER_KEY) {
+                  this.setState({imageHostAddress: e.target.value});
+                }
+              }.bind(this)}
+            onFocus={function(e){
+              this.deselectSelectedItem();
+              }.bind(this)}
+            />
+            <button
+              id='load-all-button'
+              onClick={function(){
+                loadAllAndGetUserContent(this.state.username, this.state.backendAddress, function(content) {
+                  this.setState({'content': content});
+                }.bind(this));
+              }.bind(this)}
+            >
+              Load all from server
+            </button>
+          </span>
         </div>
         {this.state.backendAddress !== null ? gridContent : "No backend"}
       </div>
