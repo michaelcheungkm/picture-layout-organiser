@@ -25,14 +25,21 @@ function createUser(name) {
   }
 
   var newUser = {
-    'name': name
+    'name': name,
+    'content': []
   };
   manager.users.push(newUser);
 
   writeManagerSync(manager);
 }
 
+function getUserContent(username) {
+  var manager = readManagerSync();
+  return manager.users.filter(u => u.name === username)[0].content;
+}
+
 module.exports = {
   listUsers,
-  createUser
+  createUser,
+  getUserContent
 };

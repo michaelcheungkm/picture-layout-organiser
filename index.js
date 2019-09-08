@@ -31,5 +31,11 @@ app.post('/createUser', (req, res) => {
   res.send('Added \"' + name + '\"\n');
 });
 
+app.get('/:username/getUserContent', (req, res) => {
+  console.log("Call to getUserContent");
+  const username = req.params.username;
+  res.send(manager.getUserContent(username))
+});
+
 
 app.listen(API_PORT, () => console.log(`Server running on port ${API_PORT}`));
