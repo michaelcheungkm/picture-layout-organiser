@@ -37,5 +37,11 @@ app.get('/:username/getUserContent', (req, res) => {
   res.send(manager.getUserContent(username))
 });
 
+app.get('/:username/loadAllAndGetUserContent', (req, res) => {
+  console.log("Call to loadAll");
+  const username = req.params.username;
+  res.send(manager.loadAllAndGetUserContent(username));
+});
+
 
 app.listen(API_PORT, () => console.log(`Server running on port ${API_PORT}`));
