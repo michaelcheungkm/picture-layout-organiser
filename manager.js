@@ -12,7 +12,7 @@ function writeManagerSync(managerJson) {
   fs.writeFileSync(workingDirectory + "/manager.json", JSON.stringify(managerJson) + '\n');
 }
 
-function writeUserSync(username, userContent) {
+function saveUserContent(username, userContent) {
   var manager = {...readManagerSync()}
   var userIndex = manager.users.findIndex(u => u.name === username);
   manager.users[userIndex].content = userContent;
@@ -62,7 +62,7 @@ function loadAllAndGetUserContent(username) {
     )
     .forEach(o => userContent.push(o));
 
-  writeUserSync(username, userContent);
+  saveUserContent(username, userContent);
 
   return getUserContent(username);
 }
@@ -71,5 +71,6 @@ module.exports = {
   listUsers,
   createUser,
   getUserContent,
-  loadAllAndGetUserContent
+  loadAllAndGetUserContent,
+  saveUserContent
 };

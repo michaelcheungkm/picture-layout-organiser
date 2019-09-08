@@ -43,5 +43,14 @@ app.get('/:username/loadAllAndGetUserContent', (req, res) => {
   res.send(manager.loadAllAndGetUserContent(username));
 });
 
+// TODO: less coupled solution?
+app.post('/:username/saveUserContent', (req, res) => {
+  console.log("Call to saveUserContent");
+  const { content } = req.body;
+  const username = req.params.username;
+  manager.saveUserContent(username, content);
+  res.send("Saved user content");
+});
+
 
 app.listen(API_PORT, () => console.log(`Server running on port ${API_PORT}`));
