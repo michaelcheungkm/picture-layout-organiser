@@ -6,7 +6,7 @@ const fs = require('fs');
 const manager = require('./manager.js');
 
 const app = express();
-const apiPort = 3001;
+const API_PORT = 3001;
 
 // Setup
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -32,4 +32,4 @@ app.post('/createUser', (req, res) => {
 });
 
 
-app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`));
+app.listen(API_PORT, () => console.log(`Server running on port ${API_PORT}`));
