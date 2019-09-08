@@ -5,15 +5,13 @@ import Grid from './components/grid/Grid.js';
 import ImageSquare from './components/imageSquare/ImageSquare.js';
 import arraySwap from './ArraySwap.js';
 
-import {getFormattedAddress, listUsers, getUserContent, saveUserContent, loadAllAndGetUserContent} from './adapters/ManagerAdapter.js';
-
-import img1 from './example_images/1.png';
-import img2 from './example_images/2.png';
-import img3 from './example_images/3.png';
-import img4 from './example_images/4.png';
-import img5 from './example_images/5.png';
-import img6 from './example_images/6.png';
-var exampleImages = [img1, img2, img3, img4, img5, img6];
+import {
+  getFormattedAddress,
+  listUsers,
+  getUserContent,
+  saveUserContent,
+  loadAllAndGetUserContent
+  } from './adapters/ManagerAdapter.js';
 
 const NUM_COLS = 3;
 const NONE_SELECTED_INDEX = -1;
