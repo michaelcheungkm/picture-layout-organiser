@@ -5,7 +5,7 @@ import Grid from './components/grid/Grid.js';
 import ImageSquare from './components/imageSquare/ImageSquare.js';
 import arraySwap from './ArraySwap.js';
 
-import {listUsers} from './adapters/ManagerAdapter.js';
+import {listUsers, getUserContent} from './adapters/ManagerAdapter.js';
 
 import img1 from './example_images/1.png';
 import img2 from './example_images/2.png';
@@ -53,22 +53,11 @@ class App extends Component {
 
   handleKeyDown(e) {
     if (this.state.selectedIndex !== NONE_SELECTED_INDEX) {
-      // TODO: replace with map
-      if (e.keyCode === LEFT_KEY) {
-        var indexChange = -1;
-      } else if (e.keyCode === UP_KEY) {
-        var indexChange = -1 * NUM_COLS;
-      } else if (e.keyCode === RIGHT_KEY) {
-        var indexChange = 1;
-      } else if (e.keyCode === DOWN_KEY) {
-        var indexChange = NUM_COLS;
-      } else {
-        return;
-      }
+      var indexChangeMap = new Map([[LEFT_KEY, -1], [UP_KEY, -1 * NUM_COLS], [RIGHT_KEY, 1], [DOWN_KEY, NUM_COLS]]);
 
       this.setState({
-        content: arraySwap(this.state.content, this.state.selectedIndex, this.state.selectedIndex + indexChange),
-        selectedIndex: this.state.selectedIndex + indexChange
+        content: arraySwap(this.state.content, this.state.selectedIndex, this.state.selectedIndex + indexChangeMap.get(e.keyCode)),
+        selectedIndex: this.state.selectedIndex + indexChangeMap.get(e.keyCode)
       });
     }
   }
@@ -118,7 +107,21 @@ class App extends Component {
               this.deselectSelectedItem();
             }.bind(this)}
           />
-          <select id='account-select'>
+          <select
+            id='account-select'
+            onChange={function(e){
+              var username = e.target.value;
+              getUserContent(username, this.state.backendAddress, function(content){
+                this.setState(
+                  {
+                    'username': username,
+                    'content': content
+                  }
+                );
+              }.bind(this))
+            }.bind(this)}
+          >
+            <option value='none'>None selected</option>
             {this.state.users.map(username =>
               (<option key={username} value={username}>{username}</option>)
             )}

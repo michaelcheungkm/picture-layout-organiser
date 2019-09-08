@@ -27,3 +27,10 @@ export function listUsers(backendAddress, callback) {
   .then(res => res.json())
   .then(callback);
 }
+
+export function getUserContent(username, backendAddress, callback) {
+  const query_url = getFormattedAddress(backendAddress) + '/' + username + '/getUserContent';
+  fetch(query_url)
+  .then(res => res.json())
+  .then(callback);
+}
