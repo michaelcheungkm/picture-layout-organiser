@@ -14,6 +14,8 @@ import {
   createAccount
   } from './adapters/ManagerAdapter.js';
 
+require('dotenv').config();
+
 const NUM_COLS = 3;
 const NONE_SELECTED_INDEX = -1;
 
@@ -169,23 +171,17 @@ class App extends Component {
             onKeyDown={
               function(e){
                 if (e.keyCode === ENTER_KEY) {
-                  this.setState({backendAddress: e.target.value});
-                  listUsers(e.target.value, function(users){
+                  var backendAddress = e.target.value + ':' + (process.env.REACT_APP_BACKEND_PORT_BASE);
+                  var imageHostAddress = e.target.value + ':' + (parseInt(process.env.REACT_APP_BACKEND_PORT_BASE) + 1);
+                  this.setState(
+                    {
+                      'backendAddress': backendAddress,
+                      'imageHostAddress': imageHostAddress
+                    }
+                  );
+                  listUsers(backendAddress, function(users){
                     this.setState({'users':users})
                   }.bind(this));
-                }
-              }.bind(this)}
-            onFocus={function(e){
-              this.deselectSelectedItem();
-              }.bind(this)}
-            />
-            Image Host Address:
-            <input
-            type="text"
-            onKeyDown={
-              function(e){
-                if (e.keyCode === ENTER_KEY) {
-                  this.setState({imageHostAddress: e.target.value});
                 }
               }.bind(this)}
             onFocus={function(e){

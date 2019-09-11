@@ -1,3 +1,5 @@
+Before running this project, create a `.env` file in this directory with the contents: ```REACT_APP_BACKEND_PORT_BASE=<backend port number>```. The default backend port number is 8008 (N.B: The backend actually uses to successive ports starting with the given port number).
+
 <hr>
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

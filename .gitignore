@@ -25,5 +25,4 @@ yarn-error.log*
 
 # End of default
 
-example_images/
-
+.env
