@@ -57,7 +57,8 @@ function loadAllAndGetUserContent(username) {
     .map(
       f => ({
         'img': f,
-        'caption': ''
+        'caption': '',
+        'completed': false
       })
     )
     .forEach(o => userContent.push(o));
