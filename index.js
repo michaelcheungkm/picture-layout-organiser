@@ -6,7 +6,7 @@ const fs = require('fs');
 const manager = require('./manager.js');
 
 const app = express();
-const API_PORT = 3001;
+const API_PORT = process.env.PORT_BASE;
 
 // Setup
 app.use(bodyParser.urlencoded({ extended: true }));

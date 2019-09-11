@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-PORT=8000
+PORT=$((PORT_BASE+1))
+
 defaultjson=$(cat "$(dirname $0)/defaultManager.json")
 wd=$(cat .config/directory.txt | envsubst)
 
