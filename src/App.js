@@ -17,7 +17,7 @@ import {
   saveUserContent,
   loadAllAndGetUserContent,
   createAccount,
-  uploadImages
+  uploadUserImages
   } from './adapters/ManagerAdapter.js';
 
 require('dotenv').config();
@@ -195,7 +195,7 @@ class App extends Component {
                 ]
               }
             );
-            uploadImages(validFiles, this.state.username, this.state.backendAddress, console.log);
+            uploadUserImages(validFiles, this.state.username, this.state.backendAddress, console.log);
 
             // Remove any file from selection
             // Causes confusing behaviour when selecting the same file twice in a row otherwise

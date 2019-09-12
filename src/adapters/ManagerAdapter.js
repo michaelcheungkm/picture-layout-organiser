@@ -56,8 +56,8 @@ export function createAccount(newName, backendAddress, callback) {
     .then(callback);
 }
 
-export function uploadImages(files, username, backendAddress, callback) {
-  const query_url = getFormattedAddress(backendAddress) + '/' + username + '/addImages';
+export function uploadUserImages(files, username, backendAddress, callback) {
+  const query_url = getFormattedAddress(backendAddress) + '/' + username + '/addUserImages';
   const formData = new FormData();
   for (var i = 0; i < files.length; i++) {
     formData.append('file', files[i]);
