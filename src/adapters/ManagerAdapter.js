@@ -1,3 +1,9 @@
+import axios from 'axios';
+
+// TODO: Switch all to use axios?
+
+const HTTP_OK = 200;
+
 function createPostParams(jsonData) {
   const params = {
     method: 'POST',
@@ -56,15 +62,15 @@ export function uploadUserImages(files, username, backendAddress, callback) {
     formData.append('file', files[i]);
   }
 
-  const params = {
-    method: 'POST',
-    body: formData
-  };
-
   var success;
-  fetch(query_url, params)
-    .then(res => {success = res.ok; return res})
-    .then(res => res.text())
-    .then(res=> callback({'ok': success, 'text': res}))
-
+  axios.post(query_url, formData, {
+       onUploadProgress: ProgressEvent => {
+           console.log(ProgressEvent.loaded / ProgressEvent.total*100);
+         // this.setState({
+         //   loaded: (ProgressEvent.loaded / ProgressEvent.total*100),
+         // });
+       },
+     })
+  .then(res => ({'ok': res.status === HTTP_OK, 'text': res.data}))
+  .then(callback);
 }
