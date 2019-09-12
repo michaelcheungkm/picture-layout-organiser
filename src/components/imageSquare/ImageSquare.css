@@ -11,7 +11,7 @@
   background-color: var(--color-gray-light);
 }
 
-.selected{
+.selected {
   opacity: 0.35;
 }
 

@@ -1,0 +1,22 @@
+.edit-page {
+  position: fixed;
+  width: 80vw;
+  height: 70vh;
+  top: 15vh;
+  left: 10vw;
+  background-color: white;
+  padding: 3vmin;
+  z-index: 5;
+  box-shadow: 0 0 0.3vmin 0.3vmin black;
+  border-radius: 1vmin;
+  border: 2px solid;
+  border-color: black;
+}
+
+.exit-icon {
+  width: 3.5vmin;
+  position: absolute;
+  right: 1vmin;
+  top: 1vmin;
+  cursor: pointer;
+}

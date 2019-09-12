@@ -4,6 +4,7 @@ import './App.css';
 import Grid from './components/grid/Grid.js';
 import ImageSquare from './components/imageSquare/ImageSquare.js';
 import StatusMessage from './components/statusMessage/StatusMessage.js';
+import EditPage from './components/editPage/EditPage.js';
 
 import arraySwap from './ArraySwap.js';
 import partition from './Partition.js';
@@ -22,7 +23,7 @@ import {
 require('dotenv').config();
 
 const NUM_COLS = 3;
-const NONE_SELECTED_INDEX = -1;
+const NONE_INDEX = -1;
 
 const ENTER_KEY = 13;
 const LEFT_KEY = 37;
@@ -47,7 +48,8 @@ class App extends Component {
       backendAddress: "",
       imageHostAddress: "",
       users: [],
-      selectedIndex: NONE_SELECTED_INDEX,
+      selectedIndex: NONE_INDEX,
+      editingIndex: NONE_INDEX,
       content: [],
       username: '',
       saved: true,
@@ -65,7 +67,7 @@ class App extends Component {
 
   handleKeyDown(e) {
     const indexChangeMap = new Map([[LEFT_KEY, -1], [UP_KEY, -1 * NUM_COLS], [RIGHT_KEY, 1], [DOWN_KEY, NUM_COLS]]);
-    if (this.state.selectedIndex !== NONE_SELECTED_INDEX && indexChangeMap.has(e.keyCode)) {
+    if (this.state.selectedIndex !== NONE_INDEX && indexChangeMap.has(e.keyCode)) {
 
       var selectedIndex = this.state.selectedIndex;
       var swapToIndex = this.state.selectedIndex + indexChangeMap.get(e.keyCode);
@@ -99,7 +101,7 @@ class App extends Component {
   }
 
   deselectSelectedItem() {
-    this.setState({selectedIndex: NONE_SELECTED_INDEX})
+    this.setState({selectedIndex: NONE_INDEX})
   }
 
   handleAccountSelect(option) {
@@ -140,6 +142,11 @@ class App extends Component {
         );
       }.bind(this));
     }
+  }
+
+  saveAndCloseEditPage(newCaption) {
+    alert(newCaption);
+    this.setState({'editingIndex': NONE_INDEX});
   }
 
   isContentLocked(index) {
@@ -262,6 +269,10 @@ class App extends Component {
                 }
               }
             }.bind(this)}
+            handleEditClick={function(e) {
+              e.stopPropagation();
+              this.setState({'editingIndex': index})
+            }.bind(this)}
           />
         ))]}
       />
@@ -317,6 +328,7 @@ class App extends Component {
           </span>
         </div>
         {this.state.backendAddress !== null && this.state.username !== '' ? gridContent : noGridContent}
+        {this.state.editingIndex !== NONE_INDEX && <EditPage saveAndClose={this.saveAndCloseEditPage.bind(this)}/>}
       </div>
     );
   }

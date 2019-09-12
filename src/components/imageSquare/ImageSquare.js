@@ -32,6 +32,7 @@ class ImageSquare extends Component {
           (<img
             src={pencil}
             className='edit-icon icon'
+            onClick={this.props.handleEditClick}
           />)
         }
       </div>
