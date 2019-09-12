@@ -65,8 +65,8 @@ class App extends Component {
   }
 
   handleKeyDown(e) {
-    if (this.state.selectedIndex !== NONE_SELECTED_INDEX) {
-      const indexChangeMap = new Map([[LEFT_KEY, -1], [UP_KEY, -1 * NUM_COLS], [RIGHT_KEY, 1], [DOWN_KEY, NUM_COLS]]);
+    const indexChangeMap = new Map([[LEFT_KEY, -1], [UP_KEY, -1 * NUM_COLS], [RIGHT_KEY, 1], [DOWN_KEY, NUM_COLS]]);
+    if (this.state.selectedIndex !== NONE_SELECTED_INDEX && indexChangeMap.has(e.keyCode)) {
 
       var selectedIndex = this.state.selectedIndex;
       var swapToIndex = this.state.selectedIndex + indexChangeMap.get(e.keyCode);
