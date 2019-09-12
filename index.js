@@ -66,8 +66,8 @@ var storage = multer.diskStorage({
 });
 var upload = multer({ storage: storage }).array('file');
 
-app.post('/:username/addImages', (req, res) => {
-  console.log("Call to addImages");
+app.post('/:username/addUserImages', (req, res) => {
+  console.log("Call to addUserImages");
   const { formData } = req.body;
   const username = req.params.username;
 
