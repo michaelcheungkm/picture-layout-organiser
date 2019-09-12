@@ -20,8 +20,20 @@
   width: 15%;
 }
 
+.icon:hover {
+  transform: scale(1.15);
+}
+
 .lock-ring {
   float: right;
+}
+
+.edit-icon {
+  display: none;
+}
+
+.image-square:hover .edit-icon {
+  display: block;
 }
 
 @media screen and (max-aspect-ratio: 9/10) {

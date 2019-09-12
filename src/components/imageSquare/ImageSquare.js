@@ -3,6 +3,7 @@ import './ImageSquare.css';
 
 import ringCircle from '../../images/ring-circle.svg';
 import padlock from '../../images/padlock.svg';
+import pencil from '../../images/pencil.svg';
 
 class ImageSquare extends Component {
 
@@ -22,9 +23,15 @@ class ImageSquare extends Component {
         >
         {this.props.blank ? null :
           (<img
-          src={this.props.locked ? padlock : ringCircle}
-          className='lock-ring icon'
-          onClick={this.props.toggleLock}
+            src={this.props.locked ? padlock : ringCircle}
+            className='lock-ring icon'
+            onClick={this.props.toggleLock}
+          />)
+        }
+        {this.props.blank || this.props.locked ? null :
+          (<img
+            src={pencil}
+            className='edit-icon icon'
           />)
         }
       </div>
