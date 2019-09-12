@@ -15,6 +15,15 @@
   opacity: 0.35;
 }
 
+.icon {
+  margin: 0.5vmin;
+  width: 15%;
+}
+
+.lock-ring {
+  float: right;
+}
+
 @media screen and (max-aspect-ratio: 9/10) {
   .image-square {
     width: 28vw;

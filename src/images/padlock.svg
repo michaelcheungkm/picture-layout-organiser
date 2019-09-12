@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="107.81961mm"
+   height="107.81898mm"
+   viewBox="0 0 118.60266 118.60195"
+   version="1.1"
+   id="svg8"
+   inkscape:export-filename="/home/james/picture-layout-organiser/picture-layout-organiser-frontend/src/images/circle-empty.png"
+   inkscape:export-xdpi="143.81389"
+   inkscape:export-ydpi="143.81389"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="padlock.svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#bfffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.979899"
+     inkscape:cx="74.723393"
+     inkscape:cy="134.87536"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:snap-others="false"
+     scale-x="1.10001"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="3706"
+     inkscape:window-height="2049"
+     inkscape:window-x="134"
+     inkscape:window-y="55"
+     inkscape:window-maximized="1"
+     inkscape:snap-bbox="true"
+     inkscape:snap-bbox-edge-midpoints="true"
+     inkscape:bbox-paths="true" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-12.136306,-51.356713)">
+    <path
+       style="opacity:0.8;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:9.31771278;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 71.43763,63.141637 A 37.251348,37.251348 0 0 0 34.563083,95.412179 h -0.376777 v 4.980781 48.1466 H 108.68896 V 95.412179 h -0.37799 A 37.251348,37.251348 0 0 0 71.43763,63.141637 Z m 0,11.310178 A 25.941052,25.941052 0 0 1 96.872793,95.412179 H 45.98762 A 25.941052,25.941052 0 0 1 71.43763,74.451815 Z"
+       id="circle859"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>

@@ -67,16 +67,21 @@ class App extends Component {
         console.log(err);
       }
 
-      // 2 seconds after last update, issue a save
-      lastUpdate = Date.now();
-      setTimeout(function(){
-        if (Date.now() - lastUpdate > 1900) {
-          saveUserContent(this.state.username, this.state.content, this.state.backendAddress, function(){
-            this.setState({'saved':true});
-          }.bind(this));
-        }
-      }.bind(this), 2000)
+      this.delayedSaveAfterLastEdit();
     }
+  }
+
+  delayedSaveAfterLastEdit() {
+    // 2 seconds after last update, issue a save
+    const delay = 2000;
+    lastUpdate = Date.now();
+    setTimeout(function(){
+      if (Date.now() - lastUpdate > delay - 100) {
+        saveUserContent(this.state.username, this.state.content, this.state.backendAddress, function(){
+          this.setState({'saved':true});
+        }.bind(this));
+      }
+    }.bind(this), delay);
   }
 
   deselectSelectedItem() {
@@ -123,6 +128,18 @@ class App extends Component {
     }
   }
 
+  lockContentBelowIndex(lockIndex) {
+    var updatedContent = [...this.state.content];
+    updatedContent = updatedContent.map((item, itemIndex) => {
+      var newItem = {...item};
+      newItem.locked = (itemIndex >= lockIndex);
+      return newItem;
+    });
+    this.deselectSelectedItem();
+    this.setState({'content': updatedContent, 'saved': false});
+    this.delayedSaveAfterLastEdit();
+  }
+
   render() {
     var gridContent = (
       <div id='main-grid' className='App' >
@@ -134,6 +151,12 @@ class App extends Component {
             <ImageSquare
               image={getFormattedAddress(this.state.imageHostAddress) + '/' + c.img}
               selected={this.state.selectedIndex === index}
+              locked={c.locked}
+              toggleLock={function(e) {
+                // Prevent click from selecting image
+                e.stopPropagation();
+                this.lockContentBelowIndex(index);
+              }.bind(this)}
               handleClick={function() {
                 if (this.state.selectedIndex === index) {
                   this.deselectSelectedItem();

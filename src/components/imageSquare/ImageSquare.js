@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
 import './ImageSquare.css';
 
+import ringCircle from '../../images/ring-circle.svg';
+import padlock from '../../images/padlock.svg';
+
 class ImageSquare extends Component {
 
 
@@ -17,6 +20,11 @@ class ImageSquare extends Component {
         style={backgroundImageStyle}
         onClick={this.props.handleClick}
         >
+        <img
+          src={this.props.locked ? padlock : ringCircle}
+          className='lock-ring icon'
+          onClick={this.props.toggleLock}
+        />
       </div>
     );
   }
