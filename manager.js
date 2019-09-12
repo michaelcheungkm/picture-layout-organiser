@@ -50,31 +50,6 @@ function getUserContent(username) {
   return manager.users.filter(u => u.name === username)[0].content;
 }
 
-function loadAllAndGetUserContent(username) {
-  var files = fs.readdirSync(workingDirectory);
-
-  var userContent = [...getUserContent(username)];
-  var userContentNames = [...userContent.map(c => c.img)];
-
-  var newEntries = files.filter(f => f !== "manager.json")
-    .filter(f => !userContentNames.includes(f))
-    .filter(f => f.toLowerCase().endsWith(".jpg") || f.toLowerCase().endsWith(".png"))
-    .map(
-      f => ({
-        'img': f,
-        'caption': '',
-        'locked': false
-      })
-    );
-
-  userContent = [...newEntries, ...userContent];
-
-  saveUserContent(username, userContent);
-
-  return getUserContent(username);
-}
-
-
 function addImages(username, files) {
   // TODO: Implement
 }
@@ -85,6 +60,6 @@ module.exports = {
   listUsers,
   createAccount,
   getUserContent,
-  loadAllAndGetUserContent,
-  saveUserContent
+  saveUserContent,
+  addImages
 };

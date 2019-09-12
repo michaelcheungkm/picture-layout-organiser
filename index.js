@@ -38,12 +38,6 @@ app.get('/:username/getUserContent', (req, res) => {
   res.send(manager.getUserContent(username))
 });
 
-app.get('/:username/loadAllAndGetUserContent', (req, res) => {
-  console.log("Call to loadAll");
-  const username = req.params.username;
-  res.send(manager.loadAllAndGetUserContent(username));
-});
-
 // TODO: more RESTful solution?
 app.post('/:username/saveUserContent', (req, res) => {
   console.log("Call to saveUserContent");
@@ -68,7 +62,6 @@ var upload = multer({ storage: storage }).array('file');
 
 app.post('/:username/addUserImages', (req, res) => {
   console.log("Call to addUserImages");
-  const { formData } = req.body;
   const username = req.params.username;
 
   upload(req, res, function (err) {
@@ -77,8 +70,14 @@ app.post('/:username/addUserImages', (req, res) => {
     } else if (err) {
       return res.status(500).json(err)
     }
-    // TODO: better response message
-    return res.send("Uploaded images")
+
+    // Successful upload
+    var uploadedNames = req.files.map(f => f.originalname);
+    var currentNames = req.files.map(f => f.filename);
+
+    // TODO: update manager
+
+    return res.send("Uploaded " + uploadedNames.length + " files: " + uploadedNames.join(', '))
     }
   );
 });
