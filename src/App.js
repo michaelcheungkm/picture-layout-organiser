@@ -105,7 +105,12 @@ class App extends Component {
           }.bind(this));
         }
       }
-    } else if (option !== '') {
+    } else if (option === '') {
+      this.setState({
+        'username': '',
+        'content': []
+      });
+    } else {
       var username = option;
       getUserContent(username, this.state.backendAddress, function(content){
         this.setState(
