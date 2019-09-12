@@ -15,7 +15,6 @@ import {
   listUsers,
   getUserContent,
   saveUserContent,
-  loadAllAndGetUserContent,
   createAccount,
   uploadUserImages
   } from './adapters/ManagerAdapter.js';
@@ -307,16 +306,6 @@ class App extends Component {
               this.deselectSelectedItem();
               }.bind(this)}
             />
-            <button
-              id='load-all-button'
-              onClick={function(){
-                loadAllAndGetUserContent(this.state.username, this.state.backendAddress, function(content) {
-                  this.setState({'content': content});
-                }.bind(this));
-              }.bind(this)}
-            >
-              Load all from server
-            </button>
           </span>
         </div>
         {this.state.backendAddress !== null && this.state.username !== '' ? gridContent : noGridContent}

@@ -42,13 +42,6 @@ export function saveUserContent(username, content, backendAddress, callback) {
     .then(callback);
 }
 
-export function loadAllAndGetUserContent(username, backendAddress, callback) {
-  const query_url = getFormattedAddress(backendAddress) + '/' + username + '/loadAllAndGetUserContent';
-  fetch(query_url)
-  .then(res => res.json())
-  .then(callback);
-}
-
 export function createAccount(newName, backendAddress, callback) {
   const query_url = getFormattedAddress(backendAddress) + '/createAccount';
   const postParams = createPostParams({'name': newName});
