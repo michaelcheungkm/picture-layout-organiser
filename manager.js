@@ -13,8 +13,27 @@ function readManagerSync() {
 }
 
 function writeManagerSync(managerJson) {
-  fs.writeFileSync(workingDirectory + "/manager.json", JSON.stringify(managerJson) + '\n');
   // TODO: Every x number of tries (or random) garbage clean files that are not referenced any more
+  garbageCollect(managerJson)
+  // WRite manager json to disk
+  fs.writeFileSync(workingDirectory + "/manager.json", JSON.stringify(managerJson) + '\n');
+}
+
+// Delete files that are no longer being referenced
+function garbageCollect(managerJson) {
+
+  // Calculate referenced files
+  var referencedFiles = [];
+  managerJson.users.map(u => u.content.map(c => c.img))
+    .forEach(filesList => referencedFiles.push(...filesList));
+
+  // Read directory
+  var allFiles = fs.readdirSync(workingDirectory);
+  // Delete all files (except the manager) that are not referenced
+  allFiles
+    .filter(f => f !== 'manager.json')
+    .filter(f => !referencedFiles.includes(f))
+    .forEach(f => fs.unlinkSync(workingDirectory + "/" + f))
 }
 
 function saveUserContent(username, userContent) {
