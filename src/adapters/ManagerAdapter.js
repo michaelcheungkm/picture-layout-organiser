@@ -55,21 +55,15 @@ export function createAccount(newName, backendAddress, callback) {
     .then(callback);
 }
 
-export function uploadUserImages(files, username, backendAddress, callback) {
+export function uploadUserImages(files, username, backendAddress, progressCallback, callback) {
   const query_url = getFormattedAddress(backendAddress) + '/' + username + '/addUserImages';
   const formData = new FormData();
   for (var i = 0; i < files.length; i++) {
     formData.append('file', files[i]);
   }
 
-  var success;
   axios.post(query_url, formData, {
-       onUploadProgress: ProgressEvent => {
-           console.log(ProgressEvent.loaded / ProgressEvent.total*100);
-         // this.setState({
-         //   loaded: (ProgressEvent.loaded / ProgressEvent.total*100),
-         // });
-       },
+       onUploadProgress: progressCallback,
      })
   .then(res => ({'ok': res.status === HTTP_OK, 'text': res.data}))
   .then(callback);

@@ -14,39 +14,44 @@
 }
 
 .top-bar {
-  background-color: var(--color-gray-light);
   width:100%;
-  padding: 2vmin;
-  position: fixed;
+  position: -webkit-sticky; /* Compatibility */
+  position: sticky;
   top: 0;
 }
 
-.page-content {
-  margin-top: 10vh;
+.admin-bar {
+  background-color: var(--color-gray-light);
+  padding: 2vmin;
 }
 
-.top-bar-right {
+.upload-status-bar {
+  background-color: var(--color-gray-very-light);
+  width:100%;
+  padding: 2vmin;
+}
+
+#upload-button {
+  padding: 0.5vmin;
+  font-weight: bold;
+  background-color: var(--color-gray-light);
+}
+
+.page-content {
+  margin-top: 2vmin;
+}
+
+.backend-address-input {
   float: right;
 }
 
-.top-bar-right input {
+.backend-address-input input {
   outline: none;
   padding: 0.5vmin;
-  margin-right: 2vmin;
-}
-
-.account-select {
-  margin: 0 2vmin;
 }
 
 .account-select select {
   outline: none;
   padding: 0.5vmin;
-  background-color: white;
-}
-
-#load-all-button {
-  padding: 0.5vmin;
-  margin: 0 2vmin;
   background-color: white;
 }

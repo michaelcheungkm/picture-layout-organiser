@@ -23,6 +23,7 @@ import {
 require('dotenv').config();
 
 const NUM_COLS = 3;
+
 const NONE_INDEX = -1;
 
 const ENTER_KEY = 13;
@@ -45,15 +46,17 @@ class App extends Component {
     this.handleKeyDown = this.handleKeyDown.bind(this);
 
     this.state = {
-      backendAddress: "",
-      imageHostAddress: "",
+      backendAddress: null,
+      imageHostAddress: null,
       users: [],
       selectedIndex: NONE_INDEX,
       editingIndex: NONE_INDEX,
       content: [],
-      username: '',
+      username: null,
       saved: true,
-      statusMessages: []
+      statusMessages: [],
+      uploading: false,
+      uploadPercent: 0
     }
   }
 
@@ -106,7 +109,7 @@ class App extends Component {
 
   handleAccountSelect(option) {
     if (option === 'create-new') {
-      if (this.state.backendAddress !== '') {
+      if (this.state.backendAddress !== null) {
         var newName = prompt("New account name");
         if (newName !== null && newName !== "") {
           createAccount(newName, this.state.backendAddress, function() {
@@ -128,7 +131,7 @@ class App extends Component {
       }
     } else if (option === '') {
       this.setState({
-        'username': '',
+        'username': null,
         'content': []
       });
     } else {
@@ -187,15 +190,14 @@ class App extends Component {
 
   render() {
 
-    var addImageSquare = (
+    var imageUploadButton = (
       <div>
-        <ImageSquare
-          image={plusIcon}
-          selected={false}
-          locked={false}
-          blank={true}
-          handleClick={() => this.fileUploaderRef.current.click()}
-        />
+        <button
+          id='upload-button'
+          onClick={() => this.fileUploaderRef.current.click()}
+        >
+          Upload
+        </button>
         <input
           type="file" multiple
           id="add-file"
@@ -208,9 +210,20 @@ class App extends Component {
 
             disallowedFiles.forEach(f => this.reportStatusMessage("Could not upload \"" + f.name + "\" - unsupported type", false));
 
-            if (validFiles.length > 0) {
-              uploadUserImages(validFiles, this.state.username, this.state.backendAddress, res =>
-                {
+            // TODO: error messages for each case
+            if (this.state.username !== null && this.state.saved && validFiles.length > 0) {
+              this.setState({'uploading': true});
+              uploadUserImages(
+                validFiles,
+                this.state.username,
+                this.state.backendAddress,
+                // progress callback
+                function(progressEvent) {
+                  var progressPercent = progressEvent.loaded / progressEvent.total * 100;
+                  this.setState({'uploadPercent': progressPercent})
+                }.bind(this),
+                // callback
+                function(res) {
                   if (!res.ok) {
                     this.reportStatusMessage("Failed to upload, please try again", false)
                   } else {
@@ -224,7 +237,8 @@ class App extends Component {
                       );
                     }.bind(this));
                   }
-                }
+                  this.setState({'uploading': false, 'uploadPercent': 0});
+                }.bind(this)
               );
             }
 
@@ -238,19 +252,10 @@ class App extends Component {
 
     var gridContent = (
       <div id='main-grid' className='App' >
-      {this.state.statusMessages.map((message, index) =>
-        <StatusMessage
-          text={message.text}
-          positive={message.positive}
-          handleDismiss={function(){
-            this.setState({'statusMessages': this.state.statusMessages.filter((m, i) => i !== index)});
-          }.bind(this)}
-        />
-      )}
       <h2>{this.state.saved ? "Content is saved and up-to-date" : "Saving"}</h2>
       <Grid
         cols={NUM_COLS}
-        gridContent={[addImageSquare, ...this.state.content.map((c, index) => (
+        gridContent={this.state.content.map((c, index) => (
           <ImageSquare
             image={getFormattedAddress(this.state.imageHostAddress) + '/' + c.img}
             selected={this.state.selectedIndex === index}
@@ -274,7 +279,7 @@ class App extends Component {
               this.setState({'editingIndex': index})
             }.bind(this)}
           />
-        ))]}
+        ))}
       />
       </div>
     );
@@ -288,47 +293,61 @@ class App extends Component {
     return (
       <div>
         <div className="top-bar">
-          <span className='account-select'>
-            Account:
-            <select
-              ref={this.accountSelectorRef}
-              onChange={(e) => this.handleAccountSelect(e.target.value)}
-            >
-              <option value=''>None selected</option>
-              {this.state.users.map(username =>
-                (<option key={username} value={username}>{username}</option>)
-              )}
-              <option value='create-new'>+ New account</option>
-            </select>
-          </span>
-          <span className="top-bar-right">
-            Backend Address:
-            <input
-            type="text"
-            onKeyDown={
-              function(e){
-                if (e.keyCode === ENTER_KEY) {
-                  var backendAddress = e.target.value + ':' + (process.env.REACT_APP_BACKEND_PORT_BASE);
-                  var imageHostAddress = e.target.value + ':' + (parseInt(process.env.REACT_APP_BACKEND_PORT_BASE) + 1);
-                  this.setState(
-                    {
-                      'backendAddress': backendAddress,
-                      'imageHostAddress': imageHostAddress
-                    }
-                  );
-                  listUsers(backendAddress, function(users){
-                    this.setState({'users':users})
-                  }.bind(this));
-                }
-              }.bind(this)}
-            onFocus={function(e){
-              this.deselectSelectedItem();
-              }.bind(this)}
-            />
-          </span>
+          <div className="admin-bar">
+            <span className='account-select'>
+              Account:
+              <select
+                ref={this.accountSelectorRef}
+                onChange={(e) => this.handleAccountSelect(e.target.value)}
+              >
+                <option value=''>None selected</option>
+                {this.state.users.map(username =>
+                  (<option key={username} value={username}>{username}</option>)
+                )}
+                <option value='create-new'>+ New account</option>
+              </select>
+            </span>
+            <span className="backend-address-input">
+              Backend Address:
+              <input
+              type="text"
+              onKeyDown={
+                function(e){
+                  if (e.keyCode === ENTER_KEY) {
+                    var backendAddress = e.target.value + ':' + (process.env.REACT_APP_BACKEND_PORT_BASE);
+                    var imageHostAddress = e.target.value + ':' + (parseInt(process.env.REACT_APP_BACKEND_PORT_BASE) + 1);
+                    this.setState(
+                      {
+                        'backendAddress': backendAddress,
+                        'imageHostAddress': imageHostAddress
+                      }
+                    );
+                    listUsers(backendAddress, function(users){
+                      this.setState({'users':users})
+                    }.bind(this));
+                  }
+                }.bind(this)}
+              onFocus={function(e){
+                this.deselectSelectedItem();
+                }.bind(this)}
+              />
+            </span>
+          </div>
+          <div className='upload-status-bar'>
+            {imageUploadButton}
+            {this.state.statusMessages.map((message, index) =>
+              <StatusMessage
+                text={message.text}
+                positive={message.positive}
+                handleDismiss={function(){
+                  this.setState({'statusMessages': this.state.statusMessages.filter((m, i) => i !== index)});
+                }.bind(this)}
+              />
+            )}
+          </div>
         </div>
         <div className='page-content'>
-          {this.state.backendAddress !== null && this.state.username !== '' ? gridContent : noGridContent}
+          {this.state.backendAddress !== null && this.state.username !== null ? gridContent : noGridContent}
           {this.state.editingIndex !== NONE_INDEX && <EditPage saveAndClose={this.saveAndCloseEditPage.bind(this)}/>}
         </div>
       </div>
