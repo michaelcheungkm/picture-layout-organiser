@@ -1,5 +1,7 @@
 const fs = require('fs');
 
+const GARBAGE_COLLECT_EVERY = 10;
+
 // N.B synchronous file reading for setup
 const workingDirectory
 = fs.readFileSync('.config/absoluteDirectory.txt', 'utf8').replace(/\s/g, "");
@@ -12,9 +14,13 @@ function readManagerSync() {
   return JSON.parse(fs.readFileSync(workingDirectory + "/manager.json"));
 }
 
+var writeManagerCounter = 0;
 function writeManagerSync(managerJson) {
-  // TODO: Every x number of tries (or random) garbage clean files that are not referenced any more
-  garbageCollect(managerJson)
+  // N.B: garbage collect on first run to ensure they are regular enough long term over many short sessions
+  if (writeManagerCounter++ % GARBAGE_COLLECT_EVERY === 0) {
+    console.log("Garbage collect");
+    garbageCollect(managerJson)
+  }
   // WRite manager json to disk
   fs.writeFileSync(workingDirectory + "/manager.json", JSON.stringify(managerJson) + '\n');
 }
