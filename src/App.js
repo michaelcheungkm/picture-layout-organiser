@@ -56,18 +56,23 @@ class App extends Component {
 
   handleKeyDown(e) {
     if (this.state.selectedIndex !== NONE_SELECTED_INDEX) {
-      var indexChangeMap = new Map([[LEFT_KEY, -1], [UP_KEY, -1 * NUM_COLS], [RIGHT_KEY, 1], [DOWN_KEY, NUM_COLS]]);
-      try{
-        this.setState({
-          content: arraySwap(this.state.content, this.state.selectedIndex, this.state.selectedIndex + indexChangeMap.get(e.keyCode)),
-          selectedIndex: this.state.selectedIndex + indexChangeMap.get(e.keyCode),
-          saved: false
-        });
-      } catch(err) {
-        console.log(err);
-      }
+      const indexChangeMap = new Map([[LEFT_KEY, -1], [UP_KEY, -1 * NUM_COLS], [RIGHT_KEY, 1], [DOWN_KEY, NUM_COLS]]);
 
-      this.delayedSaveAfterLastEdit();
+      var selectedIndex = this.state.selectedIndex;
+      var swapToIndex = this.state.selectedIndex + indexChangeMap.get(e.keyCode);
+      // N.B selectedIndex should never be locked
+      if (!this.isContentLocked(selectedIndex) && !this.isContentLocked(swapToIndex)) {
+        try{
+          this.setState({
+            content: arraySwap(this.state.content, selectedIndex, swapToIndex),
+            selectedIndex: swapToIndex,
+            saved: false
+          });
+        } catch(err) {
+          console.log(err);
+        }
+        this.delayedSaveAfterLastEdit();
+      }
     }
   }
 
@@ -129,6 +134,10 @@ class App extends Component {
   }
 
   isContentLocked(index) {
+    // N.B: content outside of the array is said to be locked also
+    if (index < 0 || index >= this.state.content.length) {
+      return true;
+    }
     return this.state.content[index].locked;
   }
 
