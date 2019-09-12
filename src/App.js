@@ -5,6 +5,8 @@ import Grid from './components/grid/Grid.js';
 import ImageSquare from './components/imageSquare/ImageSquare.js';
 import arraySwap from './ArraySwap.js';
 
+import plusIcon from './images/plus.svg';
+
 import {
   getFormattedAddress,
   listUsers,
@@ -133,6 +135,10 @@ class App extends Component {
     }
   }
 
+  handleAddImageClick(e) {
+    //TODO: implement file selection
+  }
+
   isContentLocked(index) {
     // N.B: content outside of the array is said to be locked also
     if (index < 0 || index >= this.state.content.length) {
@@ -154,33 +160,43 @@ class App extends Component {
   }
 
   render() {
+
+    var addImageSquare = (
+      <ImageSquare
+        image={plusIcon}
+        selected={false}
+        locked={false}
+        blank={true}
+        handleClick={this.handleAddImageClick.bind(this)}
+      />
+    );
+
     var gridContent = (
       <div id='main-grid' className='App' >
       <h2>{this.state.saved ? "Content is saved and up-to-date" : "Saving"}</h2>
       <Grid
         cols={NUM_COLS}
-        gridContent={this.state.content.map((c, index) => ({
-          display:
-            <ImageSquare
-              image={getFormattedAddress(this.state.imageHostAddress) + '/' + c.img}
-              selected={this.state.selectedIndex === index}
-              locked={c.locked}
-              toggleLock={function(e) {
-                // Prevent click from selecting image
-                e.stopPropagation();
-                this.lockContentBelowIndex(index);
-              }.bind(this)}
-              handleClick={function() {
-                if (!this.isContentLocked(index)) {
-                  if (this.state.selectedIndex === index) {
-                    this.deselectSelectedItem();
-                  } else {
-                    this.setState({selectedIndex: index});
-                  }
+        gridContent={[addImageSquare, ...this.state.content.map((c, index) => (
+          <ImageSquare
+            image={getFormattedAddress(this.state.imageHostAddress) + '/' + c.img}
+            selected={this.state.selectedIndex === index}
+            locked={c.locked}
+            toggleLock={function(e) {
+              // Prevent click from selecting image
+              e.stopPropagation();
+              this.lockContentBelowIndex(index);
+            }.bind(this)}
+            handleClick={function() {
+              if (!this.isContentLocked(index)) {
+                if (this.state.selectedIndex === index) {
+                  this.deselectSelectedItem();
+                } else {
+                  this.setState({selectedIndex: index});
                 }
-              }.bind(this)}
-            />
-        }))}
+              }
+            }.bind(this)}
+          />
+        ))]}
       />
       </div>
     );

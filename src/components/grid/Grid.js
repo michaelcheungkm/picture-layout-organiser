@@ -10,7 +10,7 @@ class Grid extends Component {
       rows.push(
         <div className='grid-row' key={i}>
           {this.props.gridContent.slice(i, i + this.props.cols).map((item, index) =>
-            <div className='grid-item' key={index}>{item.display}</div>
+            <div className='grid-item' key={index}>{item}</div>
           )}
         </div>
       );

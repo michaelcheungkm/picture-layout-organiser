@@ -20,11 +20,13 @@ class ImageSquare extends Component {
         style={backgroundImageStyle}
         onClick={this.props.handleClick}
         >
-        <img
+        {this.props.blank ? null :
+          (<img
           src={this.props.locked ? padlock : ringCircle}
           className='lock-ring icon'
           onClick={this.props.toggleLock}
-        />
+          />)
+        }
       </div>
     );
   }
