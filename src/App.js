@@ -327,8 +327,10 @@ class App extends Component {
             />
           </span>
         </div>
-        {this.state.backendAddress !== null && this.state.username !== '' ? gridContent : noGridContent}
-        {this.state.editingIndex !== NONE_INDEX && <EditPage saveAndClose={this.saveAndCloseEditPage.bind(this)}/>}
+        <div className='page-content'>
+          {this.state.backendAddress !== null && this.state.username !== '' ? gridContent : noGridContent}
+          {this.state.editingIndex !== NONE_INDEX && <EditPage saveAndClose={this.saveAndCloseEditPage.bind(this)}/>}
+        </div>
       </div>
     );
   }

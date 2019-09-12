@@ -17,7 +17,12 @@
   background-color: var(--color-gray-light);
   width:100%;
   padding: 2vmin;
-  margin-bottom: 2vmin;
+  position: fixed;
+  top: 0;
+}
+
+.page-content {
+  margin-top: 10vh;
 }
 
 .top-bar-right {
