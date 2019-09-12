@@ -55,7 +55,7 @@ var storage = multer.diskStorage({
     },
     filename: function (req, file, cb) {
       // Rename files by prepending date to avoid name clashes
-      cb(null, Date.now() + '-' +file.originalname )
+      cb(null, Date.now() + '-' + file.originalname.replace(/\s/g, "_"));
     }
 });
 var upload = multer({ storage: storage }).array('file');
@@ -75,7 +75,7 @@ app.post('/:username/addUserImages', (req, res) => {
     var uploadedNames = req.files.map(f => f.originalname);
     var currentNames = req.files.map(f => f.filename);
 
-    // TODO: update manager
+    manager.addUserImages(username, currentNames);
 
     return res.send("Uploaded " + uploadedNames.length + " files: " + uploadedNames.join(', '))
     }

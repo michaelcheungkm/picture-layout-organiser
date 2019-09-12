@@ -50,8 +50,23 @@ function getUserContent(username) {
   return manager.users.filter(u => u.name === username)[0].content;
 }
 
-function addImages(username, files) {
-  // TODO: Implement
+function addUserImages(username, filenames) {
+  var userContent = [...getUserContent(username)];
+  var existingFileNames = [...userContent.map(c => c.img)];
+
+  var newEntries = filenames.map(f =>
+    ({
+      'img': f,
+      'caption': '',
+      'locked': false
+    })
+  );
+
+  userContent = [...newEntries, ...userContent];
+
+  saveUserContent(username, userContent);
+
+  return getUserContent(username);
 }
 
 
@@ -61,5 +76,5 @@ module.exports = {
   createAccount,
   getUserContent,
   saveUserContent,
-  addImages
+  addUserImages
 };
