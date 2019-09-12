@@ -52,7 +52,7 @@ class App extends Component {
       content: [],
       username: '',
       saved: true,
-      statusMessages: [{text:'pass', positive:true},{text:'fail', positive:false}]
+      statusMessages: []
     }
   }
 
@@ -183,7 +183,18 @@ class App extends Component {
             var allowingFiles = partition(e.target.files, f => ALLOWED_MIME_TYPES.includes(f.type));
             var validFiles = allowingFiles.pass;
             var disallowedFiles = allowingFiles.fail;
-            console.log(disallowedFiles);
+            this.setState(
+              {'statusMessages':
+                [...disallowedFiles.map(f =>
+                    ({
+                      'text': "Could not upload \"" + f.name + "\" - unsupported type",
+                      'positive': false
+                    })
+                  ),
+                  ...this.state.statusMessages
+                ]
+              }
+            );
             uploadImages(validFiles, this.state.username, this.state.backendAddress, console.log);
 
             // Remove any file from selection
