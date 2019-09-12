@@ -4,6 +4,10 @@ const fs = require('fs');
 const workingDirectory
 = fs.readFileSync('.config/absoluteDirectory.txt', 'utf8').replace(/\s/g, "");
 
+function getWorkingDirectory() {
+  return workingDirectory;
+}
+
 function readManagerSync() {
   return JSON.parse(fs.readFileSync(workingDirectory + "/manager.json"));
 }
@@ -70,7 +74,14 @@ function loadAllAndGetUserContent(username) {
   return getUserContent(username);
 }
 
+
+function addImages(username, files) {
+  // TODO: Implement
+}
+
+
 module.exports = {
+  getWorkingDirectory,
   listUsers,
   createAccount,
   getUserContent,
