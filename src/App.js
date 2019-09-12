@@ -4,6 +4,7 @@ import './App.css';
 import Grid from './components/grid/Grid.js';
 import ImageSquare from './components/imageSquare/ImageSquare.js';
 import arraySwap from './ArraySwap.js';
+import partition from './Partition.js';
 
 import plusIcon from './images/plus.svg';
 
@@ -13,7 +14,8 @@ import {
   getUserContent,
   saveUserContent,
   loadAllAndGetUserContent,
-  createAccount
+  createAccount,
+  uploadImages
   } from './adapters/ManagerAdapter.js';
 
 require('dotenv').config();
@@ -27,6 +29,8 @@ const UP_KEY = 38;
 const RIGHT_KEY = 39;
 const DOWN_KEY = 40;
 
+const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png'];
+
 var lastUpdate = 0;
 
 class App extends Component {
@@ -34,6 +38,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.accountSelectorRef = React.createRef();
+    this.fileUploaderRef = React.createRef();
 
     this.handleKeyDown = this.handleKeyDown.bind(this);
 
@@ -135,10 +140,6 @@ class App extends Component {
     }
   }
 
-  handleAddImageClick(e) {
-    //TODO: implement file selection
-  }
-
   isContentLocked(index) {
     // N.B: content outside of the array is said to be locked also
     if (index < 0 || index >= this.state.content.length) {
@@ -162,13 +163,32 @@ class App extends Component {
   render() {
 
     var addImageSquare = (
-      <ImageSquare
-        image={plusIcon}
-        selected={false}
-        locked={false}
-        blank={true}
-        handleClick={this.handleAddImageClick.bind(this)}
-      />
+      <div>
+        <ImageSquare
+          image={plusIcon}
+          selected={false}
+          locked={false}
+          blank={true}
+          handleClick={() => this.fileUploaderRef.current.click()}
+        />
+        <input
+          type="file" multiple
+          id="add-file"
+          ref={this.fileUploaderRef}
+          style={{display: "none"}}
+          onChange={function (e) {
+            var allowingFiles = partition(e.target.files, f => ALLOWED_MIME_TYPES.includes(f.type));
+            var validFiles = allowingFiles.pass;
+            var disallowedFiles = allowingFiles.fail;
+            console.log(disallowedFiles);
+            uploadImages(validFiles, this.state.username, this.state.backendAddress, console.log);
+
+            // Remove any file from selection
+            // Causes confusing behaviour when selecting the same file twice in a row otherwise
+            e.target.value = null;
+          }.bind(this)}
+        />
+      </div>
     );
 
     var gridContent = (

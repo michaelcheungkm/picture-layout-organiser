@@ -51,7 +51,24 @@ export function loadAllAndGetUserContent(username, backendAddress, callback) {
 
 export function createAccount(newName, backendAddress, callback) {
   const query_url = getFormattedAddress(backendAddress) + '/createAccount';
-  var postParams = createPostParams({'name': newName});
+  const postParams = createPostParams({'name': newName});
   fetch(query_url, postParams)
     .then(callback);
+}
+
+export function uploadImages(files, username, backendAddress, callback) {
+  const query_url = getFormattedAddress(backendAddress) + '/' + username + '/addImages';
+  const formData = new FormData();
+  for (var i = 0; i < files.length; i++) {
+    formData.append('file', files[i]);
+  }
+
+  const params = {
+    method: 'POST',
+    body: formData
+  };
+
+  fetch(query_url, params)
+    .then(callback)
+
 }
