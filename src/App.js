@@ -128,6 +128,10 @@ class App extends Component {
     }
   }
 
+  isContentLocked(index) {
+    return this.state.content[index].locked;
+  }
+
   lockContentBelowIndex(lockIndex) {
     var updatedContent = [...this.state.content];
     updatedContent = updatedContent.map((item, itemIndex) => {
@@ -158,10 +162,12 @@ class App extends Component {
                 this.lockContentBelowIndex(index);
               }.bind(this)}
               handleClick={function() {
-                if (this.state.selectedIndex === index) {
-                  this.deselectSelectedItem();
-                } else {
-                  this.setState({selectedIndex: index});
+                if (!this.isContentLocked(index)) {
+                  if (this.state.selectedIndex === index) {
+                    this.deselectSelectedItem();
+                  } else {
+                    this.setState({selectedIndex: index});
+                  }
                 }
               }.bind(this)}
             />
