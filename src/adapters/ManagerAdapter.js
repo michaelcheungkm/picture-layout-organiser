@@ -68,7 +68,10 @@ export function uploadUserImages(files, username, backendAddress, callback) {
     body: formData
   };
 
+  var success;
   fetch(query_url, params)
-    .then(callback)
+    .then(res => {success = res.ok; return res})
+    .then(res => res.text())
+    .then(res=> callback({'ok': success, 'text': res}))
 
 }

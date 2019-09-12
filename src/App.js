@@ -163,6 +163,22 @@ class App extends Component {
     this.delayedSaveAfterLastEdit();
   }
 
+  reportStatusMessage(messageText, positive) {
+    this.setState((prevState, props) => {
+          return {message: prevState.message + '!'}
+        })
+
+
+    this.setState((prevState, props) =>
+      ({'statusMessages':
+        [
+          {'text': messageText, 'positive': positive},
+          ...prevState.statusMessages
+        ]
+      })
+    );
+  }
+
   render() {
 
     var addImageSquare = (
@@ -183,19 +199,20 @@ class App extends Component {
             var allowingFiles = partition(e.target.files, f => ALLOWED_MIME_TYPES.includes(f.type));
             var validFiles = allowingFiles.pass;
             var disallowedFiles = allowingFiles.fail;
-            this.setState(
-              {'statusMessages':
-                [...disallowedFiles.map(f =>
-                    ({
-                      'text': "Could not upload \"" + f.name + "\" - unsupported type",
-                      'positive': false
-                    })
-                  ),
-                  ...this.state.statusMessages
-                ]
-              }
-            );
-            uploadUserImages(validFiles, this.state.username, this.state.backendAddress, console.log);
+
+            disallowedFiles.forEach(f => this.reportStatusMessage("Could not upload \"" + f.name + "\" - unsupported type", false));
+
+            if (validFiles.length > 0) {
+              uploadUserImages(validFiles, this.state.username, this.state.backendAddress, res =>
+                {
+                  if (!res.ok) {
+                    this.reportStatusMessage("Failed to upload, please try again", false)
+                  } else {
+                    this.reportStatusMessage(res.text, true);
+                  }
+                }
+              );
+            }
 
             // Remove any file from selection
             // Causes confusing behaviour when selecting the same file twice in a row otherwise
