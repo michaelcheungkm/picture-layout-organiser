@@ -10,6 +10,7 @@ function readManagerSync() {
 
 function writeManagerSync(managerJson) {
   fs.writeFileSync(workingDirectory + "/manager.json", JSON.stringify(managerJson) + '\n');
+  // TODO: Every x number of tries (or random) garbage clean files that are not referenced any more
 }
 
 function saveUserContent(username, userContent) {

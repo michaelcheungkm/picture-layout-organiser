@@ -43,7 +43,7 @@ app.get('/:username/loadAllAndGetUserContent', (req, res) => {
   res.send(manager.loadAllAndGetUserContent(username));
 });
 
-// TODO: less coupled solution?
+// TODO: more RESTful solution?
 app.post('/:username/saveUserContent', (req, res) => {
   console.log("Call to saveUserContent");
   const { content } = req.body;
