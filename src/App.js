@@ -208,6 +208,14 @@ class App extends Component {
                     this.reportStatusMessage("Failed to upload, please try again", false)
                   } else {
                     this.reportStatusMessage(res.text, true);
+                    getUserContent(this.state.username, this.state.backendAddress, function(content){
+                      this.setState(
+                        {
+                          'username': this.state.username,
+                          'content': content
+                        }
+                      );
+                    }.bind(this));
                   }
                 }
               );
