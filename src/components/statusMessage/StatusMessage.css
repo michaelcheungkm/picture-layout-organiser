@@ -1,0 +1,22 @@
+.status-message {
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 0.5vmin;
+  padding: 0.5vmin;
+  border-radius: 1vmin;
+}
+
+.positive {
+  background-color: rgb(135, 167, 107)
+}
+
+.negative {
+  background-color: rgb(210, 105, 105);
+}
+
+.dismiss-icon {
+  width: 2vmin;
+  float: right;
+  cursor: pointer;
+}

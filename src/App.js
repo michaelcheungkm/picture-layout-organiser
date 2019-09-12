@@ -3,6 +3,8 @@ import './App.css';
 
 import Grid from './components/grid/Grid.js';
 import ImageSquare from './components/imageSquare/ImageSquare.js';
+import StatusMessage from './components/statusMessage/StatusMessage.js';
+
 import arraySwap from './ArraySwap.js';
 import partition from './Partition.js';
 
@@ -49,7 +51,8 @@ class App extends Component {
       selectedIndex: NONE_SELECTED_INDEX,
       content: [],
       username: '',
-      saved: true
+      saved: true,
+      statusMessages: [{text:'pass', positive:true},{text:'fail', positive:false}]
     }
   }
 
@@ -193,6 +196,15 @@ class App extends Component {
 
     var gridContent = (
       <div id='main-grid' className='App' >
+      {this.state.statusMessages.map((message, index) =>
+        <StatusMessage
+          text={message.text}
+          positive={message.positive}
+          handleDismiss={function(){
+            this.setState({'statusMessages': this.state.statusMessages.filter((m, i) => i !== index)});
+          }.bind(this)}
+        />
+      )}
       <h2>{this.state.saved ? "Content is saved and up-to-date" : "Saving"}</h2>
       <Grid
         cols={NUM_COLS}
