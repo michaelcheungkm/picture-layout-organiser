@@ -21,14 +21,12 @@ class ImageSquare extends Component {
         style={backgroundImageStyle}
         onClick={this.props.handleClick}
         >
-        {this.props.blank ? null :
-          (<img
-            src={this.props.locked ? padlock : ringCircle}
-            className='lock-ring icon'
-            onClick={this.props.toggleLock}
-          />)
-        }
-        {this.props.blank || this.props.locked ? null :
+        <img
+          src={this.props.locked ? padlock : ringCircle}
+          className='lock-ring icon'
+          onClick={this.props.toggleLock}
+        />
+        {this.props.locked ? null :
           (<img
             src={pencil}
             className='edit-icon icon'
