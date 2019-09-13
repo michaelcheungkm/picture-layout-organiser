@@ -55,6 +55,13 @@ export function createAccount(newName, backendAddress, callback) {
     .then(callback);
 }
 
+export function deleteAccount(username, backendAddress, callback) {
+  const query_url = getFormattedAddress(backendAddress) + '/deleteAccount';
+  const postParams = createPostParams({'name': username});
+  fetch(query_url, postParams)
+    .then(callback);
+}
+
 export function uploadUserImages(files, username, backendAddress, progressCallback, callback) {
   const query_url = getFormattedAddress(backendAddress) + '/' + username + '/addUserImages';
   const formData = new FormData();

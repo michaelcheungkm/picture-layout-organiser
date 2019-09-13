@@ -12,6 +12,7 @@ import arraySwap from './ArraySwap.js';
 import partition from './Partition.js';
 
 import plusIcon from './images/plus.svg';
+import binIcon from './images/bin.svg';
 
 import {
   getFormattedAddress,
@@ -19,6 +20,7 @@ import {
   getUserContent,
   saveUserContent,
   createAccount,
+  deleteAccount,
   uploadUserImages
   } from './adapters/ManagerAdapter.js';
 
@@ -316,6 +318,22 @@ class App extends Component {
                 )}
                 <option value='create-new'>+ New account</option>
               </select>
+              <img
+                id='account-delete-icon'
+                src={binIcon}
+                onClick={function() {
+                  if (this.state.backendAddress !== null && this.state.username !== null && !this.state.uploading) {
+                    if (window.confirm("Are you sure you want to delete \"" + this.state.username + "\" from the organiser")) {
+                      deleteAccount(this.state.username, this.state.backendAddress, function() {
+                        listUsers(this.state.backendAddress, (users) => {
+                          this.setState({'users': users, 'content': []});
+                          this.accountSelectorRef.current.value = '';
+                        });
+                      }.bind(this));
+                    }
+                  }
+                }.bind(this)}
+              />
             </span>
             <span className="backend-address-input">
               Backend Address:

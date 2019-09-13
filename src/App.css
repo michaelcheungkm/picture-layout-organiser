@@ -63,3 +63,9 @@
   padding: 0.5vmin;
   background-color: white;
 }
+
+#account-delete-icon {
+  width: 3vmin;
+  cursor: pointer;
+  margin:0.5vmin;
+}
