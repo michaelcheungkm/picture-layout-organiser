@@ -77,7 +77,8 @@ app.post('/:username/addUserImages', (req, res) => {
 
     manager.addUserImages(username, currentNames);
 
-    return res.send("Uploaded " + uploadedNames.length + " files: " + uploadedNames.join(', '))
+    return res.send("Successfully uploaded " + uploadedNames.length + " "
+      + (uploadedNames.length > 1 ? "files" : "file"));
     }
   );
 });
