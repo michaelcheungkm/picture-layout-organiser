@@ -43,9 +43,17 @@
 
 .caption-input-area {
   width: 53vmin;
-  height: calc(90vmin - (2 * 3vmin) - 2vmin - 53vmin);
+  height: calc(90vmin - (2 * 3vmin) - 2vmin - 53vmin - 3.5em);
   padding: 0.5vmin;
   margin: auto;
   margin-top: 2vmin;
   border: solid 0.1vmin black;
+}
+
+#save-caption-button {
+  width: 53vmin;
+  position: absolute;
+  bottom: 3vmin;
+  left: 50%;
+  transform: translateX(-50%);
 }

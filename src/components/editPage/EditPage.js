@@ -25,7 +25,7 @@ class EditPage extends Component {
         <img
           src={crossImage}
           className='exit-icon'
-          onClick={() => this.props.saveAndClose(this.state.text)}
+          onClick={() => this.props.closePage()}
         />
         <div
           style={backgroundImageStyle}
@@ -43,6 +43,12 @@ class EditPage extends Component {
           value={this.state.text}
           onChange={(e) => this.setState({'text': e.target.value})}
         />
+        <button
+          id='save-caption-button'
+          onClick={() => this.props.saveCaption(this.state.text)}
+        >
+          Save
+        </button>
       </div>
     );
   }

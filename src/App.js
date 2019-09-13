@@ -152,13 +152,12 @@ class App extends Component {
     }
   }
 
-  saveAndCloseEditPage(newCaption) {
+  saveCaption(newCaption) {
     var content = [...this.state.content];
     content[this.state.editingIndex].caption = newCaption;
     this.setState({
       'content': content,
       'saved': false,
-      'editingIndex': NONE_INDEX
     });
     this.delayedSaveAfterLastEdit();
   }
@@ -406,7 +405,8 @@ class App extends Component {
             <EditPage
               text={this.state.content[this.state.editingIndex].caption}
               image={getFormattedAddress(this.state.imageHostAddress) + '/' + this.state.content[this.state.editingIndex].img}
-              saveAndClose={this.saveAndCloseEditPage.bind(this)}
+              closePage={() => this.setState({'editingIndex': NONE_INDEX})}
+              saveCaption={this.saveCaption.bind(this)}
               deleteImage={function() {
                 if (window.confirm("Delete image?")) {
                   this.deleteImage(this.state.editingIndex);
