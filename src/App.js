@@ -205,7 +205,7 @@ class App extends Component {
           id="add-file"
           ref={this.fileUploaderRef}
           style={{display: "none"}}
-          disabled={this.state.username === null || !this.state.saved}
+          disabled={this.state.username === null || !this.state.saved || this.state.uploading}
           onChange={function (e) {
             var allowingFiles = partition(e.target.files, f => ALLOWED_MIME_TYPES.includes(f.type));
             var validFiles = allowingFiles.pass;
@@ -258,8 +258,9 @@ class App extends Component {
       </span>
     );
 
+    // N.B: hide content whilst uploading to prevent race conditions
     var gridContent = (
-      <div id='main-grid' className='App' >
+      <div id='main-grid' className='App' style={{'display': this.state.uploading ? 'none' : 'table'}}>
       <h2>{this.state.saved ? "Content is saved and up-to-date" : "Saving"}</h2>
       <Grid
         cols={NUM_COLS}
@@ -306,7 +307,7 @@ class App extends Component {
               Account:
               <select
                 ref={this.accountSelectorRef}
-                disabled={this.state.backendAddress === null}
+                disabled={this.state.backendAddress === null || this.state.uploading}
                 onChange={(e) => this.handleAccountSelect(e.target.value)}
               >
                 <option value=''>None selected</option>
@@ -320,6 +321,7 @@ class App extends Component {
               Backend Address:
               <input
                 type="text"
+                disabled={this.state.uploading}
                 onKeyDown={
                   function(e){
                     if (e.keyCode === ENTER_KEY) {
@@ -359,7 +361,7 @@ class App extends Component {
           </div>
         </div>
         <div className='page-content'>
-          {this.state.backendAddress !== null && this.state.username !== null ? gridContent : noGridContent}
+          {(this.state.backendAddress !== null && this.state.username !== null) ? gridContent : noGridContent}
           {this.state.editingIndex !== NONE_INDEX && <EditPage saveAndClose={this.saveAndCloseEditPage.bind(this)}/>}
         </div>
       </div>
