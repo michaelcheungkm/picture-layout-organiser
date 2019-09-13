@@ -1,28 +1,51 @@
 .edit-page {
   position: fixed;
-  width: 80vw;
-  height: 70vh;
-  top: 15vh;
-  left: 10vw;
+  height: 90vmin;
+  width: 60vmin;
+  top: calc((100vh - 90vmin) / 2);
+  left: calc((100vw - 60vmin) / 2);
   background-color: white;
   padding: 3vmin;
   z-index: 5;
-  box-shadow: 0 0 0.3vmin 0.3vmin black;
-  border-radius: 1vmin;
-  border: 2px solid;
-  border-color: black;
+  border: solid 0.1vmin black;
+  text-align: center;
 }
 
 .exit-icon {
-  width: 3.5vmin;
+  width: 3vmin;
   position: absolute;
-  right: 1vmin;
-  top: 1vmin;
+  right: 0.5vmin;
+  top: 0.5vmin;
   cursor: pointer;
 }
 
 .image-delete-icon {
   width: 3vmin;
   cursor: pointer;
-  margin:0.5vmin;
+  position: absolute;
+  left: 0.5vmin;
+  top: 0.5vmin;
+  cursor: pointer;
+}
+
+.image-preview {
+  width: 53vmin;
+  height: 53vmin;
+  margin: 0.25vmin;
+  overflow: hidden;
+  border: solid 0.1vmin black;
+  background-position: 50% 50%;
+  background-size: cover;
+  cursor: pointer;
+  background-color: var(--color-gray-light);
+  margin: auto
+}
+
+.caption-input-area {
+  width: 53vmin;
+  height: calc(90vmin - (2 * 3vmin) - 2vmin - 53vmin);
+  padding: 0.5vmin;
+  margin: auto;
+  margin-top: 2vmin;
+  border: solid 0.1vmin black;
 }

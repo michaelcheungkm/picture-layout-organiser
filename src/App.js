@@ -405,6 +405,7 @@ class App extends Component {
             this.state.editingIndex !== NONE_INDEX &&
             <EditPage
               text={this.state.content[this.state.editingIndex].caption}
+              image={getFormattedAddress(this.state.imageHostAddress) + '/' + this.state.content[this.state.editingIndex].img}
               saveAndClose={this.saveAndCloseEditPage.bind(this)}
               deleteImage={function() {
                 if (window.confirm("Delete image?")) {
