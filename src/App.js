@@ -157,6 +157,14 @@ class App extends Component {
     this.setState({'editingIndex': NONE_INDEX});
   }
 
+  deleteImage(index) {
+    var content = [...this.state.content];
+    // Delete 1 item at index, index
+    content.splice(index, 1);
+    this.setState({'content': content, 'saved': false});
+    this.delayedSaveAfterLastEdit();
+  }
+
   isContentLocked(index) {
     // N.B: content outside of the array is said to be locked also
     if (index < 0 || index >= this.state.content.length) {
@@ -381,7 +389,16 @@ class App extends Component {
         </div>
         <div className='page-content'>
           {(this.state.backendAddress !== null && this.state.username !== null) ? gridContent : noGridContent}
-          {this.state.editingIndex !== NONE_INDEX && <EditPage saveAndClose={this.saveAndCloseEditPage.bind(this)}/>}
+          {
+            this.state.editingIndex !== NONE_INDEX &&
+            <EditPage
+              saveAndClose={this.saveAndCloseEditPage.bind(this)}
+              deleteImage={function() {
+                this.deleteImage(this.state.editingIndex);
+                this.setState({'editingIndex': NONE_INDEX});
+              }.bind(this)}
+            />
+          }
         </div>
       </div>
     );

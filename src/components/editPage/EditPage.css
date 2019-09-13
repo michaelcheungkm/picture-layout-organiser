@@ -20,3 +20,9 @@
   top: 1vmin;
   cursor: pointer;
 }
+
+.image-delete-icon {
+  width: 3vmin;
+  cursor: pointer;
+  margin:0.5vmin;
+}
