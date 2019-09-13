@@ -112,6 +112,7 @@ class App extends Component {
   }
 
   handleAccountSelect(option) {
+    this.deselectSelectedItem();
     if (option === 'create-new') {
       if (this.state.backendAddress !== null) {
         var newName = prompt("New account name");
