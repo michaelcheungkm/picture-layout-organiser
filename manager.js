@@ -70,6 +70,17 @@ function createAccount(name) {
   writeManagerSync(manager);
 }
 
+function deleteAccount(name) {
+  var manager = readManagerSync();
+
+  var users = [...manager.users];
+  users = users.filter(u => u.name !== name)
+
+  manager.users = users;
+
+  writeManagerSync(manager);
+}
+
 function getUserContent(username) {
   var manager = readManagerSync();
   return manager.users.filter(u => u.name === username)[0].content;
@@ -99,6 +110,7 @@ module.exports = {
   getWorkingDirectory,
   listUsers,
   createAccount,
+  deleteAccount,
   getUserContent,
   saveUserContent,
   addUserImages

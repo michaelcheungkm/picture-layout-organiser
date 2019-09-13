@@ -32,6 +32,13 @@ app.post('/createAccount', (req, res) => {
   res.send('Added \"' + name + '\"\n');
 });
 
+app.post('/deleteAccount', (req, res) => {
+  console.log("Call to deleteAccount");
+  const { name } = req.body;
+  manager.deleteAccount(name);
+  res.send('Deleted \"' + name + '\"\n');
+});
+
 app.get('/:username/getUserContent', (req, res) => {
   console.log("Call to getUserContent");
   const username = req.params.username;
