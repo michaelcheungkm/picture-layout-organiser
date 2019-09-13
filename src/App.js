@@ -153,8 +153,14 @@ class App extends Component {
   }
 
   saveAndCloseEditPage(newCaption) {
-    alert(newCaption);
-    this.setState({'editingIndex': NONE_INDEX});
+    var content = [...this.state.content];
+    content[this.state.editingIndex].caption = newCaption;
+    this.setState({
+      'content': content,
+      'saved': false,
+      'editingIndex': NONE_INDEX
+    });
+    this.delayedSaveAfterLastEdit();
   }
 
   deleteImage(index) {
@@ -280,6 +286,7 @@ class App extends Component {
             image={getFormattedAddress(this.state.imageHostAddress) + '/' + c.img}
             selected={this.state.selectedIndex === index}
             locked={c.locked}
+            captioned={c.caption !== ''}
             toggleLock={function(e) {
               // Prevent click from selecting image
               e.stopPropagation();
@@ -296,7 +303,7 @@ class App extends Component {
             }.bind(this)}
             handleEditClick={function(e) {
               e.stopPropagation();
-              this.setState({'editingIndex': index})
+              this.setState({'editingIndex': index, 'selectedIndex': NONE_INDEX})
             }.bind(this)}
           />
         ))}
@@ -392,10 +399,13 @@ class App extends Component {
           {
             this.state.editingIndex !== NONE_INDEX &&
             <EditPage
+              text={this.state.content[this.state.editingIndex].caption}
               saveAndClose={this.saveAndCloseEditPage.bind(this)}
               deleteImage={function() {
-                this.deleteImage(this.state.editingIndex);
-                this.setState({'editingIndex': NONE_INDEX});
+                if (window.confirm("Delete image?")) {
+                  this.deleteImage(this.state.editingIndex);
+                  this.setState({'editingIndex': NONE_INDEX});
+                }
               }.bind(this)}
             />
           }
