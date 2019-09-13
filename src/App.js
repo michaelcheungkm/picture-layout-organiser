@@ -325,6 +325,32 @@ class App extends Component {
       <div>
         <div className="top-bar">
           <div className="admin-bar">
+          <span className="backend-address-input">
+            Backend Address:
+            <input
+              type="text"
+              disabled={this.state.uploading || this.state.editingIndex !== NONE_INDEX}
+              onKeyDown={
+                function(e){
+                  if (e.keyCode === ENTER_KEY) {
+                    var backendAddress = e.target.value + ':' + (process.env.REACT_APP_BACKEND_PORT_BASE);
+                    var imageHostAddress = e.target.value + ':' + (parseInt(process.env.REACT_APP_BACKEND_PORT_BASE) + 1);
+                    this.setState(
+                      {
+                        'backendAddress': backendAddress,
+                        'imageHostAddress': imageHostAddress
+                      }
+                    );
+                    listUsers(backendAddress, function(users){
+                      this.setState({'users':users})
+                    }.bind(this));
+                  }
+                }.bind(this)}
+                onFocus={function(e){
+                  this.deselectSelectedItem();
+                }.bind(this)}
+              />
+            </span>
             <span className='account-select'>
               Account:
               <select
@@ -353,32 +379,6 @@ class App extends Component {
                     }
                   }
                 }.bind(this)}
-              />
-            </span>
-            <span className="backend-address-input">
-              Backend Address:
-              <input
-                type="text"
-                disabled={this.state.uploading || this.state.editingIndex !== NONE_INDEX}
-                onKeyDown={
-                  function(e){
-                    if (e.keyCode === ENTER_KEY) {
-                      var backendAddress = e.target.value + ':' + (process.env.REACT_APP_BACKEND_PORT_BASE);
-                      var imageHostAddress = e.target.value + ':' + (parseInt(process.env.REACT_APP_BACKEND_PORT_BASE) + 1);
-                      this.setState(
-                        {
-                          'backendAddress': backendAddress,
-                          'imageHostAddress': imageHostAddress
-                        }
-                      );
-                      listUsers(backendAddress, function(users){
-                        this.setState({'users':users})
-                      }.bind(this));
-                    }
-                  }.bind(this)}
-                onFocus={function(e){
-                  this.deselectSelectedItem();
-                  }.bind(this)}
               />
             </span>
           </div>

@@ -51,6 +51,14 @@
   float: right;
 }
 
+@media screen and (max-aspect-ratio: 9/10) {
+  .backend-address-input {
+    float: none;
+    display: block;
+    margin-bottom: 1vmin;
+  }
+}
+
 .backend-address-input input {
   outline: none;
   padding: 0.5vmin;
@@ -63,7 +71,7 @@
 }
 
 #account-delete-icon {
-  width: 3vmin;
+  width: 1.5rem;
   cursor: pointer;
   margin:0.5vmin;
 }
