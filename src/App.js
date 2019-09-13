@@ -222,7 +222,7 @@ class App extends Component {
           id="add-file"
           ref={this.fileUploaderRef}
           style={{display: "none"}}
-          disabled={this.state.username === null || !this.state.saved || this.state.uploading}
+          disabled={this.state.username === null || !this.state.saved || this.state.uploading || this.state.editingIndex !== NONE_INDEX}
           onChange={function (e) {
             var allowingFiles = partition(e.target.files, f => ALLOWED_MIME_TYPES.includes(f.type));
             var validFiles = allowingFiles.pass;
@@ -288,22 +288,27 @@ class App extends Component {
             locked={c.locked}
             captioned={c.caption !== ''}
             toggleLock={function(e) {
-              // Prevent click from selecting image
               e.stopPropagation();
-              this.lockContentBelowIndex(index);
+              if (this.state.editingIndex === NONE_INDEX) {
+                this.lockContentBelowIndex(index);
+              }
             }.bind(this)}
             handleClick={function() {
-              if (!this.isContentLocked(index)) {
-                if (this.state.selectedIndex === index) {
-                  this.deselectSelectedItem();
-                } else {
-                  this.setState({selectedIndex: index});
+              if (this.state.editingIndex === NONE_INDEX) {
+                if (!this.isContentLocked(index)) {
+                  if (this.state.selectedIndex === index) {
+                    this.deselectSelectedItem();
+                  } else {
+                    this.setState({selectedIndex: index});
+                  }
                 }
               }
             }.bind(this)}
             handleEditClick={function(e) {
               e.stopPropagation();
-              this.setState({'editingIndex': index, 'selectedIndex': NONE_INDEX})
+              if (this.state.editingIndex === NONE_INDEX) {
+                this.setState({'editingIndex': index, 'selectedIndex': NONE_INDEX})
+              }
             }.bind(this)}
           />
         ))}
@@ -325,7 +330,7 @@ class App extends Component {
               Account:
               <select
                 ref={this.accountSelectorRef}
-                disabled={this.state.backendAddress === null || this.state.uploading}
+                disabled={this.state.backendAddress === null || this.state.uploading || this.state.editingIndex !== NONE_INDEX}
                 onChange={(e) => this.handleAccountSelect(e.target.value)}
               >
                 <option value=''>None selected</option>
@@ -338,7 +343,7 @@ class App extends Component {
                 id='account-delete-icon'
                 src={binIcon}
                 onClick={function() {
-                  if (this.state.backendAddress !== null && this.state.username !== null && !this.state.uploading) {
+                  if (this.state.backendAddress !== null && this.state.username !== null && !this.state.uploading && this.state.editingIndex === NONE_INDEX) {
                     if (window.confirm("Are you sure you want to delete \"" + this.state.username + "\" from the organiser")) {
                       deleteAccount(this.state.username, this.state.backendAddress, function() {
                         listUsers(this.state.backendAddress, (users) => {
@@ -355,7 +360,7 @@ class App extends Component {
               Backend Address:
               <input
                 type="text"
-                disabled={this.state.uploading}
+                disabled={this.state.uploading || this.state.editingIndex !== NONE_INDEX}
                 onKeyDown={
                   function(e){
                     if (e.keyCode === ENTER_KEY) {
