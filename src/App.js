@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import './App.css';
 
+import {Progress} from 'reactstrap';
+
 import Grid from './components/grid/Grid.js';
 import ImageSquare from './components/imageSquare/ImageSquare.js';
 import StatusMessage from './components/statusMessage/StatusMessage.js';
@@ -191,7 +193,7 @@ class App extends Component {
   render() {
 
     var imageUploadButton = (
-      <div>
+      <span>
         <button
           id='upload-button'
           onClick={() => this.fileUploaderRef.current.click()}
@@ -203,6 +205,7 @@ class App extends Component {
           id="add-file"
           ref={this.fileUploaderRef}
           style={{display: "none"}}
+          disabled={this.state.username === null || !this.state.saved}
           onChange={function (e) {
             var allowingFiles = partition(e.target.files, f => ALLOWED_MIME_TYPES.includes(f.type));
             var validFiles = allowingFiles.pass;
@@ -210,36 +213,41 @@ class App extends Component {
 
             disallowedFiles.forEach(f => this.reportStatusMessage("Could not upload \"" + f.name + "\" - unsupported type", false));
 
-            // TODO: error messages for each case
-            if (this.state.username !== null && this.state.saved && validFiles.length > 0) {
-              this.setState({'uploading': true});
-              uploadUserImages(
-                validFiles,
-                this.state.username,
-                this.state.backendAddress,
-                // progress callback
-                function(progressEvent) {
-                  var progressPercent = progressEvent.loaded / progressEvent.total * 100;
-                  this.setState({'uploadPercent': progressPercent})
-                }.bind(this),
-                // callback
-                function(res) {
-                  if (!res.ok) {
-                    this.reportStatusMessage("Failed to upload, please try again", false)
-                  } else {
-                    this.reportStatusMessage(res.text, true);
-                    getUserContent(this.state.username, this.state.backendAddress, function(content){
-                      this.setState(
-                        {
-                          'username': this.state.username,
-                          'content': content
-                        }
-                      );
-                    }.bind(this));
-                  }
-                  this.setState({'uploading': false, 'uploadPercent': 0});
-                }.bind(this)
-              );
+            // N.B: Content must be saved before upload
+            if (this.state.username !== null && this.state.saved) {
+              if (validFiles.length > 0) {
+                this.setState({'uploading': true, 'uploadPercent': 0});
+                uploadUserImages(
+                  validFiles,
+                  this.state.username,
+                  this.state.backendAddress,
+                  // progress callback
+                  function(progressEvent) {
+                    var progressPercent = progressEvent.loaded / progressEvent.total * 100;
+                    this.setState({'uploadPercent': progressPercent})
+                  }.bind(this),
+                  // callback
+                  function(res) {
+                    if (!res.ok) {
+                      this.reportStatusMessage("Failed to upload, please try again", false)
+                    } else {
+                      this.reportStatusMessage(res.text, true);
+                      getUserContent(this.state.username, this.state.backendAddress, function(content){
+                        this.setState(
+                          {
+                            'username': this.state.username,
+                            'content': content
+                          }
+                        );
+                      }.bind(this));
+                    }
+                    this.setState({'uploading': false});
+                  }.bind(this)
+                );
+              }
+            } else {
+              // Should never be reached as inputs are disabled in this case
+              this.reportStatusMessage("Something went wrong, please try again", false);
             }
 
             // Remove any file from selection
@@ -247,7 +255,7 @@ class App extends Component {
             e.target.value = null;
           }.bind(this)}
         />
-      </div>
+      </span>
     );
 
     var gridContent = (
@@ -298,6 +306,7 @@ class App extends Component {
               Account:
               <select
                 ref={this.accountSelectorRef}
+                disabled={this.state.backendAddress === null}
                 onChange={(e) => this.handleAccountSelect(e.target.value)}
               >
                 <option value=''>None selected</option>
@@ -310,31 +319,34 @@ class App extends Component {
             <span className="backend-address-input">
               Backend Address:
               <input
-              type="text"
-              onKeyDown={
-                function(e){
-                  if (e.keyCode === ENTER_KEY) {
-                    var backendAddress = e.target.value + ':' + (process.env.REACT_APP_BACKEND_PORT_BASE);
-                    var imageHostAddress = e.target.value + ':' + (parseInt(process.env.REACT_APP_BACKEND_PORT_BASE) + 1);
-                    this.setState(
-                      {
-                        'backendAddress': backendAddress,
-                        'imageHostAddress': imageHostAddress
-                      }
-                    );
-                    listUsers(backendAddress, function(users){
-                      this.setState({'users':users})
-                    }.bind(this));
-                  }
-                }.bind(this)}
-              onFocus={function(e){
-                this.deselectSelectedItem();
-                }.bind(this)}
+                type="text"
+                onKeyDown={
+                  function(e){
+                    if (e.keyCode === ENTER_KEY) {
+                      var backendAddress = e.target.value + ':' + (process.env.REACT_APP_BACKEND_PORT_BASE);
+                      var imageHostAddress = e.target.value + ':' + (parseInt(process.env.REACT_APP_BACKEND_PORT_BASE) + 1);
+                      this.setState(
+                        {
+                          'backendAddress': backendAddress,
+                          'imageHostAddress': imageHostAddress
+                        }
+                      );
+                      listUsers(backendAddress, function(users){
+                        this.setState({'users':users})
+                      }.bind(this));
+                    }
+                  }.bind(this)}
+                onFocus={function(e){
+                  this.deselectSelectedItem();
+                  }.bind(this)}
               />
             </span>
           </div>
           <div className='upload-status-bar'>
             {imageUploadButton}
+              <div className="progress-bar-container">
+                <Progress max="100" color="success" striped value={this.state.uploadPercent}>{Math.round(this.state.uploadPercent, 2)}%</Progress>
+              </div>
             {this.state.statusMessages.map((message, index) =>
               <StatusMessage
                 text={message.text}

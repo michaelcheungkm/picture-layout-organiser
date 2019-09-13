@@ -5,8 +5,8 @@
   margin-bottom: 0.5vmin;
   padding: 0.5vmin;
   border-radius: 1vmin;
-  --color-positive: rgb(135, 167, 107);
-  --color-negative: rgb(210, 105, 105);
+  --color-positive: rgb(40, 167, 69);
+  --color-negative: rgb(226, 96, 96);
 }
 
 .positive {

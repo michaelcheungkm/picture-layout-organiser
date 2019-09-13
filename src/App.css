@@ -26,15 +26,23 @@
 }
 
 .upload-status-bar {
-  background-color: var(--color-gray-very-light);
+  text-align: center;
+  background-color: white;
   width:100%;
   padding: 2vmin;
+  border-bottom: solid 0.1vmin black;
 }
 
 #upload-button {
-  padding: 0.5vmin;
+  padding: 0.75vmin;
   font-weight: bold;
   background-color: var(--color-gray-light);
+  margin-right: 2vmin;
+}
+
+.progress-bar-container {
+  display: inline-block;
+  width: 80vw;
 }
 
 .page-content {
