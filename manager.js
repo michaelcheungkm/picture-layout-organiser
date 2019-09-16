@@ -90,12 +90,10 @@ function addUserMedia(username, files) {
   var userContent = [...getUserContent(username)];
   var existingFileNames = [...userContent.map(c => c.addr)];
 
-  var filenames = files.map(f => f.filename);
-
   // TODO: support for galleries and videos
-  var newEntries = filenames.map(f =>
+  var newEntries = files.map(f =>
     ({
-      'addr': f,
+      'addr': f.filename,
       'caption': '',
       'gallery': false,
       'video': f.mimetype.startsWith('video'),
