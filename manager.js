@@ -86,14 +86,17 @@ function getUserContent(username) {
   return manager.users.filter(u => u.name === username)[0].content;
 }
 
-function addUserImages(username, filenames) {
+function addUserMedia(username, filenames) {
   var userContent = [...getUserContent(username)];
   var existingFileNames = [...userContent.map(c => c.img)];
 
+  // TODO: support for galleries and videos
   var newEntries = filenames.map(f =>
     ({
-      'img': f,
+      'addr': f,
       'caption': '',
+      'gallery': false,
+      'video': false,
       'locked': false
     })
   );
@@ -113,5 +116,5 @@ module.exports = {
   deleteAccount,
   getUserContent,
   saveUserContent,
-  addUserImages
+  addUserMedia
 };

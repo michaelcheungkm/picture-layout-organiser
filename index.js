@@ -67,8 +67,8 @@ var storage = multer.diskStorage({
 });
 var upload = multer({ storage: storage }).array('file');
 
-app.post('/:username/addUserImages', (req, res) => {
-  console.log("Call to addUserImages");
+app.post('/:username/addUserMedia', (req, res) => {
+  console.log("Call to addUserMedia");
   const username = req.params.username;
 
   upload(req, res, function (err) {
@@ -82,7 +82,7 @@ app.post('/:username/addUserImages', (req, res) => {
     var uploadedNames = req.files.map(f => f.originalname);
     var currentNames = req.files.map(f => f.filename);
 
-    manager.addUserImages(username, currentNames);
+    manager.addUserMedia(username, currentNames);
 
     return res.send("Successfully uploaded " + uploadedNames.length + " "
       + (uploadedNames.length > 1 ? "files" : "file"));
