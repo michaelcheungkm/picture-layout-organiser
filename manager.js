@@ -86,9 +86,11 @@ function getUserContent(username) {
   return manager.users.filter(u => u.name === username)[0].content;
 }
 
-function addUserMedia(username, filenames) {
+function addUserMedia(username, files) {
   var userContent = [...getUserContent(username)];
   var existingFileNames = [...userContent.map(c => c.img)];
+
+  var filenames = files.map(f => f.filename);
 
   // TODO: support for galleries and videos
   var newEntries = filenames.map(f =>
@@ -96,7 +98,7 @@ function addUserMedia(username, filenames) {
       'addr': f,
       'caption': '',
       'gallery': false,
-      'video': false,
+      'video': f.mimetype.startsWith('video'),
       'locked': false
     })
   );

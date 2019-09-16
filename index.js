@@ -79,13 +79,13 @@ app.post('/:username/addUserMedia', (req, res) => {
     }
 
     // Successful upload
-    var uploadedNames = req.files.map(f => f.originalname);
-    var currentNames = req.files.map(f => f.filename);
+    // var uploadedNames = req.files.map(f => f.originalname);
+    // var currentNames = req.files.map(f => f.filename);
 
-    manager.addUserMedia(username, currentNames);
+    manager.addUserMedia(username, req.files);
 
-    return res.send("Successfully uploaded " + uploadedNames.length + " "
-      + (uploadedNames.length > 1 ? "files" : "file"));
+    return res.send("Successfully uploaded " + req.files.length + " "
+      + (req.files.length > 1 ? "files" : "file"));
     }
   );
 });
