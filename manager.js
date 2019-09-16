@@ -30,7 +30,7 @@ function garbageCollect(managerJson) {
 
   // Calculate referenced files
   var referencedFiles = [];
-  managerJson.users.map(u => u.content.map(c => c.img))
+  managerJson.users.map(u => u.content.map(c => c.addr))
     .forEach(filesList => referencedFiles.push(...filesList));
 
   // Read directory
@@ -88,7 +88,7 @@ function getUserContent(username) {
 
 function addUserMedia(username, files) {
   var userContent = [...getUserContent(username)];
-  var existingFileNames = [...userContent.map(c => c.img)];
+  var existingFileNames = [...userContent.map(c => c.addr)];
 
   var filenames = files.map(f => f.filename);
 
