@@ -1,4 +1,5 @@
 const fs = require('fs');
+const ThumbnailGenerator = require('video-thumbnail-generator').default;
 
 const GARBAGE_COLLECT_EVERY = 10;
 
@@ -30,7 +31,12 @@ function garbageCollect(managerJson) {
 
   // Calculate referenced files
   var referencedFiles = [];
+
+  // Add addr from all users
   managerJson.users.map(u => u.content.map(c => c.addr))
+    .forEach(filesList => referencedFiles.push(...filesList));
+  // Add video thumbnails from all users
+  managerJson.users.map(u => u.content.filter(c => c.video).map(c => c.thumbnail))
     .forEach(filesList => referencedFiles.push(...filesList));
 
   // Read directory
@@ -86,26 +92,55 @@ function getUserContent(username) {
   return manager.users.filter(u => u.name === username)[0].content;
 }
 
-function addUserMedia(username, files) {
+async function addUserMedia(username, files) {
+  // TODO: support for galleries
   var userContent = [...getUserContent(username)];
   var existingFileNames = [...userContent.map(c => c.addr)];
 
-  // TODO: support for galleries and videos
-  var newEntries = files.map(f =>
-    ({
-      'addr': f.filename,
-      'caption': '',
-      'gallery': false,
-      'video': f.mimetype.startsWith('video'),
-      'locked': false
-    })
-  );
+
+  // Generate thumbnails for videos
+  // Store thumbnail name against filename in map
+  var thumbnailMap = new Map();
+  // Map each video to promise that thumbnail will be completed and its name put in the map
+  var thumbnailPromises = files.filter(f => f.mimetype.startsWith('video'))
+    .map(async f => {
+      // Generate thumbnail
+      const tg = new ThumbnailGenerator({
+        sourcePath: workingDirectory + '/' + f.filename,
+        thumbnailPath: workingDirectory
+      });
+      var thumbnail = await tg.generateOneByPercent(50, {size: '640x?'})
+      thumbnailMap.set(f.filename, thumbnail);
+      return thumbnail;
+  });
+
+  // Wait for all thumbnails to be complete and added to map
+  await Promise.all(thumbnailPromises);
+
+  var newEntries = files.map(f => {
+    if (f.mimetype.startsWith('video')) {
+      return ({
+        'addr': f.filename,
+        'caption': '',
+        'video': true,
+        'thumbnail': thumbnailMap.get(f.filename),
+        'gallery': false,
+        'locked': false
+      });
+    } else {
+      return ({
+        'addr': f.filename,
+        'caption': '',
+        'video': false,
+        'gallery': false,
+        'locked': false
+      });
+    }
+  });
 
   userContent = [...newEntries, ...userContent];
 
   saveUserContent(username, userContent);
-
-  return getUserContent(username);
 }
 
 

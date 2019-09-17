@@ -71,18 +71,15 @@ app.post('/:username/addUserMedia', (req, res) => {
   console.log("Call to addUserMedia");
   const username = req.params.username;
 
-  upload(req, res, function (err) {
+  upload(req, res, async function (err) {
     if (err instanceof multer.MulterError) {
       return res.status(500).json(err)
     } else if (err) {
       return res.status(500).json(err)
     }
 
-    // Successful upload
-    // var uploadedNames = req.files.map(f => f.originalname);
-    // var currentNames = req.files.map(f => f.filename);
-
-    manager.addUserMedia(username, req.files);
+    // Ensure to wait for addUserMedia to finish
+    await manager.addUserMedia(username, req.files);
 
     return res.send("Successfully uploaded " + req.files.length + " "
       + (req.files.length > 1 ? "files" : "file"));
