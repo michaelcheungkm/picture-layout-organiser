@@ -32,8 +32,8 @@ function garbageCollect(managerJson) {
   // Calculate referenced files
   var referencedFiles = [];
 
-  // Add addr from all users
-  managerJson.users.map(u => u.content.map(c => c.addr))
+  // Add media from all users
+  managerJson.users.map(u => u.content.map(c => c.media))
     .forEach(filesList => referencedFiles.push(...filesList));
   // Add video thumbnails from all users
   managerJson.users.map(u => u.content.filter(c => c.video).map(c => c.thumbnail))
@@ -95,7 +95,7 @@ function getUserContent(username) {
 async function addUserMedia(username, files) {
   // TODO: support for galleries
   var userContent = [...getUserContent(username)];
-  var existingFileNames = [...userContent.map(c => c.addr)];
+  var existingFileNames = [...userContent.map(c => c.media)];
 
 
   // Generate thumbnails for videos
@@ -121,7 +121,7 @@ async function addUserMedia(username, files) {
     if (f.mimetype.startsWith('video')) {
       // Video
       return ({
-        'addr': f.filename,
+        'media': f.filename,
         'caption': '',
         'mediaType': 'video',
         'thumbnail': thumbnailMap.get(f.filename),
@@ -130,7 +130,7 @@ async function addUserMedia(username, files) {
     } else {
       // Standard image
       return ({
-        'addr': f.filename,
+        'media': f.filename,
         'caption': '',
         'mediaType': 'image',
         'locked': false
