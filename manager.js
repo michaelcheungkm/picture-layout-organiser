@@ -33,10 +33,10 @@ function garbageCollect(managerJson) {
   var referencedFiles = [];
 
   // Add media from all users
-  managerJson.users.map(u => u.content.map(c => c.media))
+  managerJson.users.map(u => u.content.filter(c => c.mediaType === 'image' || c.mediaType === 'video').map(c => c.media))
     .forEach(filesList => referencedFiles.push(...filesList));
   // Add video thumbnails from all users
-  managerJson.users.map(u => u.content.filter(c => c.video).map(c => c.thumbnail))
+  managerJson.users.map(u => u.content.filter(c => c.mediaType === 'video').map(c => c.thumbnail))
     .forEach(filesList => referencedFiles.push(...filesList));
 
   // Read directory
@@ -93,10 +93,7 @@ function getUserContent(username) {
 }
 
 async function addUserMedia(username, files) {
-  // TODO: support for galleries
   var userContent = [...getUserContent(username)];
-  var existingFileNames = [...userContent.map(c => c.media)];
-
 
   // Generate thumbnails for videos
   // Store thumbnail name against filename in map
@@ -122,8 +119,8 @@ async function addUserMedia(username, files) {
       // Video
       return ({
         'media': f.filename,
-        'caption': '',
         'mediaType': 'video',
+        'caption': '',
         'thumbnail': thumbnailMap.get(f.filename),
         'locked': false
       });
@@ -131,8 +128,8 @@ async function addUserMedia(username, files) {
       // Standard image
       return ({
         'media': f.filename,
-        'caption': '',
         'mediaType': 'image',
+        'caption': '',
         'locked': false
       });
     }
