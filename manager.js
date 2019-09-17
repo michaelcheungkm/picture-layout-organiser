@@ -119,20 +119,20 @@ async function addUserMedia(username, files) {
 
   var newEntries = files.map(f => {
     if (f.mimetype.startsWith('video')) {
+      // Video
       return ({
         'addr': f.filename,
         'caption': '',
-        'video': true,
+        'mediaType': 'video',
         'thumbnail': thumbnailMap.get(f.filename),
-        'gallery': false,
         'locked': false
       });
     } else {
+      // Standard image
       return ({
         'addr': f.filename,
         'caption': '',
-        'video': false,
-        'gallery': false,
+        'mediaType': 'image',
         'locked': false
       });
     }
