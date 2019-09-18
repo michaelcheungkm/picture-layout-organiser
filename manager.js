@@ -104,9 +104,7 @@ function getUserContent(username) {
   return manager.users.filter(u => u.name === username)[0].content;
 }
 
-async function addUserMedia(username, files) {
-  var userContent = [...getUserContent(username)];
-
+async function generateThumbnails(files) {
   // Generate thumbnails for videos
   // Store thumbnail name against filename in map
   var thumbnailMap = new Map();
@@ -125,6 +123,13 @@ async function addUserMedia(username, files) {
 
   // Wait for all thumbnails to be complete and added to map
   await Promise.all(thumbnailPromises);
+  return thumbnailMap;
+}
+
+async function addUserMedia(username, files) {
+  var userContent = [...getUserContent(username)];
+
+  var thumbnailMap = await generateThumbnails(files);
 
   var newEntries = files.map(f => {
     if (f.mimetype.startsWith('video')) {
@@ -155,24 +160,7 @@ async function addUserMedia(username, files) {
 async function addUserGallery(username, files) {
   var userContent = [...getUserContent(username)];
 
-  // Generate thumbnails for videos
-  // Store thumbnail name against filename in map
-  var thumbnailMap = new Map();
-  // Map each video to promise that thumbnail will be completed and its name put in the map
-  var thumbnailPromises = files.filter(f => f.mimetype.startsWith('video'))
-    .map(async f => {
-      // Generate thumbnail
-      const tg = new ThumbnailGenerator({
-        sourcePath: workingDirectory + '/' + f.filename,
-        thumbnailPath: workingDirectory
-      });
-      var thumbnail = await tg.generateOneByPercent(50, {size: '640x?'})
-      thumbnailMap.set(f.filename, thumbnail);
-      return thumbnail;
-  });
-
-  // Wait for all thumbnails to be complete and added to map
-  await Promise.all(thumbnailPromises);
+  var thumbnailMap = await generateThumbnails(files);
 
   var galleryContent = files.map(f => {
     if (f.mimetype.startsWith('video')) {
