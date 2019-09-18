@@ -32,11 +32,23 @@ function garbageCollect(managerJson) {
   // Calculate referenced files
   var referencedFiles = [];
 
-  // Add media from all users
+  // Add video and image media from all users
   managerJson.users.map(u => u.content.filter(c => c.mediaType === 'image' || c.mediaType === 'video').map(c => c.media))
     .forEach(filesList => referencedFiles.push(...filesList));
   // Add video thumbnails from all users
   managerJson.users.map(u => u.content.filter(c => c.mediaType === 'video').map(c => c.thumbnail))
+    .forEach(filesList => referencedFiles.push(...filesList));
+
+  // Add gallery content
+  var allGalleries = [];
+  // Read all user's galleries into allGalleries
+  managerJson.users.map(u => u.content.filter(c => c.mediaType === 'gallery').map(c => c.media))
+    .forEach(userGalleries => allGalleries.push(...userGalleries));
+  // Add all gallery vidoes and images
+  allGalleries.map(g => g.filter(c => c.mediaType === 'image' || c.mediaType === 'video').map(c => c.media))
+    .forEach(filesList => referencedFiles.push(...filesList));
+  // Add all gallery video thumbnails
+  allGalleries.map(g => g.filter(c => c.mediaType === 'video').map(c => c.thumbnail))
     .forEach(filesList => referencedFiles.push(...filesList));
 
   // Read directory
@@ -140,6 +152,57 @@ async function addUserMedia(username, files) {
   saveUserContent(username, userContent);
 }
 
+async function addUserGallery(username, files) {
+  var userContent = [...getUserContent(username)];
+
+  // Generate thumbnails for videos
+  // Store thumbnail name against filename in map
+  var thumbnailMap = new Map();
+  // Map each video to promise that thumbnail will be completed and its name put in the map
+  var thumbnailPromises = files.filter(f => f.mimetype.startsWith('video'))
+    .map(async f => {
+      // Generate thumbnail
+      const tg = new ThumbnailGenerator({
+        sourcePath: workingDirectory + '/' + f.filename,
+        thumbnailPath: workingDirectory
+      });
+      var thumbnail = await tg.generateOneByPercent(50, {size: '640x?'})
+      thumbnailMap.set(f.filename, thumbnail);
+      return thumbnail;
+  });
+
+  // Wait for all thumbnails to be complete and added to map
+  await Promise.all(thumbnailPromises);
+
+  var galleryContent = files.map(f => {
+    if (f.mimetype.startsWith('video')) {
+      // Video
+      return ({
+        'media': f.filename,
+        'mediaType': 'video',
+        'thumbnail': thumbnailMap.get(f.filename)
+      });
+    } else {
+      // Standard image
+      return ({
+        'media': f.filename,
+        'mediaType': 'image'
+      });
+    }
+  });
+
+  var newContentEntry = {
+    'media': galleryContent,
+    'mediaType': 'gallery',
+    'caption': '',
+    'locked': false
+  };
+
+  userContent = [newContentEntry, ...userContent];
+
+  saveUserContent(username, userContent);
+}
+
 
 module.exports = {
   getWorkingDirectory,
@@ -148,5 +211,6 @@ module.exports = {
   deleteAccount,
   getUserContent,
   saveUserContent,
-  addUserMedia
+  addUserMedia,
+  addUserGallery
 };
