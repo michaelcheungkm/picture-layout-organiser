@@ -11,4 +11,4 @@ echo "Switching to directory: $wd"
 test -f "$wd/manager.json" || (echo "$defaultjson" > "$wd/manager.json" && echo "Creating empty manager")
 
 # Serve the files
-http-server -p $PORT
+http-server --cors -p $PORT
