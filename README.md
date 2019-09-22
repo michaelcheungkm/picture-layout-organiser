@@ -4,3 +4,6 @@ If required edit the port number in `run.sh`. This should match the port number 
 
 <hr>
 Require `ffmpeg` to be installed.
+<hr>
+
+Run `npm start` to start the server
