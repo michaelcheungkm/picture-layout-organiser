@@ -95,25 +95,25 @@ app.post('/:username/addUserMedia', (req, res) => {
   )
 })
 
-// app.post('/:username/addUserGallery', (req, res) => {
-//   console.log("Call to addUserGallery")
-//   const username = req.params.username
-//
-//   upload(req, res, async function (err) {
-//     if (err instanceof multer.MulterError) {
-//       return res.status(500).json(err)
-//     } else if (err) {
-//       return res.status(500).json(err)
-//     }
-//
-//     // Ensure to wait for addUserMedia to finish
-//     await manager.addUserGallery(username, req.files)
-//
-//     return res.send("Successfully uploaded " + req.files.length + " "
-//       + (req.files.length > 1 ? "files" : "file") + " to gallery")
-//     }
-//   )
-// })
+app.post('/:username/addUserGallery', (req, res) => {
+  console.log("Call to addUserGallery")
+  const username = req.params.username
+
+  upload(req, res, async function (err) {
+    if (err instanceof multer.MulterError) {
+      return res.status(500).json(err)
+    } else if (err) {
+      return res.status(500).json(err)
+    }
+
+    // Ensure to wait for addUserMedia to finish
+    await mongoManager.addUserGallery(username, req.files, DATA_DIRECTORY)
+
+    return res.send("Successfully uploaded " + req.files.length + " "
+      + (req.files.length > 1 ? "files" : "file") + " to gallery")
+    }
+  )
+})
 
 
 app.listen(API_PORT, () => console.log(`Server running on port ${API_PORT}`))

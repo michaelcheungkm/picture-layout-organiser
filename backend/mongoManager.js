@@ -91,31 +91,82 @@ async function addUserMedia(username, files, targetDirectory) {
 
   var thumbnailMap = await generateThumbnails(files, targetDirectory)
 
-  var newEntries = files.map(f => {
+  var newEntries = files.map((f, index) => {
     if (f.mimetype.startsWith('video')) {
       // Video
       return ({
+        'user': username,
         'media': f.filename,
         'mediaType': 'video',
+        'orderIndex': index
         'caption': '',
-        'thumbnail': thumbnailMap.get(f.filename),
+        'thumbnail': thumbnailMap.get(f.filename)
       })
     } else {
       // Standard image
       return ({
+        'user': username,
         'media': f.filename,
         'mediaType': 'image',
-        'caption': '',
+        'orderIndex': index
+        'caption': ''
       })
     }
   })
 
+  // Increase the orderIndex of all existing content for user
+  await db.collection('inventory').updateMany(
+    { user: username },
+    { $inc: { orderIndex: files.length}}
+  )
+
   await collection.insertMany(newEntries)
+}
+
+async function addUserGallery(username, files, targetDirectory) {
+  const collection = db.collection('content')
+
+  var thumbnailMap = await generateThumbnails(files)
+
+  var galleryContent = files.map(f => {
+    if (f.mimetype.startsWith('video')) {
+      // Video
+      return ({
+        'user': username,
+        'media': f.filename,
+        'mediaType': 'video',
+        'thumbnail': thumbnailMap.get(f.filename)
+      })
+    } else {
+      // Standard image
+      return ({
+        'user': username,
+        'media': f.filename,
+        'mediaType': 'image'
+      })
+    }
+  })
+
+  var galleryEntry = {
+    'media': galleryContent,
+    'mediaType': 'gallery',
+    'caption': ''
+  }
+
+  // Increase the orderIndex of all existing content for user
+  await db.collection('inventory').updateMany(
+    { user: username },
+    { $inc: { orderIndex: 1}}
+  )
+
+  await collection.insertOne(galleryEntry)
 }
 
 module.exports = {
   listUsers,
   createUser,
   deleteUser,
-  getUserContent
+  getUserContent,
+  addUserMedia,
+  addUserGallery
 }
