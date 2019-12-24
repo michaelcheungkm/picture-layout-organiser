@@ -24,10 +24,4 @@ yarn-error.log*
 
 
 # End of default
-
-# Backend
-!backend/.config/directory.txt
-backend/.config/
-
-# Frontend
-frontend/.env
+.env

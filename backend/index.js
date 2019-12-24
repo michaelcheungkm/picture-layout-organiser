@@ -4,11 +4,11 @@ const cors = require('cors')
 const fs = require('fs')
 const multer = require('multer')
 
-const manager = require('./manager.js')
 const mongoManager = require('./mongoManager.js')
 
 const app = express()
 const API_PORT = process.env.PORT_BASE
+const DATA_DIRECTORY = process.env.DATA_DIRECTORY
 
 // Setup
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -54,13 +54,13 @@ app.get('/:username/getUserContent', async (req, res) => {
 })
 
 // TODO: more RESTful solution?
-app.post('/:username/saveUserContent', (req, res) => {
-  console.log("Call to saveUserContent")
-  const { content } = req.body
-  const username = req.params.username
-  manager.saveUserContent(username, content)
-  res.send("Saved user content")
-})
+// app.post('/:username/saveUserContent', (req, res) => {
+//   console.log("Call to saveUserContent")
+//   const { content } = req.body
+//   const username = req.params.username
+//   manager.saveUserContent(username, content)
+//   res.send("Saved user content")
+// })
 
 // Multer to handle disk storage for uploads
 var storage = multer.diskStorage({
@@ -87,7 +87,7 @@ app.post('/:username/addUserMedia', (req, res) => {
     }
 
     // Ensure to wait for addUserMedia to finish
-    await manager.addUserMedia(username, req.files)
+    await mongoManager.addUserMedia(username, req.files, DATA_DIRECTORY)
 
     return res.send("Successfully uploaded " + req.files.length + " "
       + (req.files.length > 1 ? "files" : "file"))
@@ -95,25 +95,25 @@ app.post('/:username/addUserMedia', (req, res) => {
   )
 })
 
-app.post('/:username/addUserGallery', (req, res) => {
-  console.log("Call to addUserGallery")
-  const username = req.params.username
-
-  upload(req, res, async function (err) {
-    if (err instanceof multer.MulterError) {
-      return res.status(500).json(err)
-    } else if (err) {
-      return res.status(500).json(err)
-    }
-
-    // Ensure to wait for addUserMedia to finish
-    await manager.addUserGallery(username, req.files)
-
-    return res.send("Successfully uploaded " + req.files.length + " "
-      + (req.files.length > 1 ? "files" : "file") + " to gallery")
-    }
-  )
-})
+// app.post('/:username/addUserGallery', (req, res) => {
+//   console.log("Call to addUserGallery")
+//   const username = req.params.username
+//
+//   upload(req, res, async function (err) {
+//     if (err instanceof multer.MulterError) {
+//       return res.status(500).json(err)
+//     } else if (err) {
+//       return res.status(500).json(err)
+//     }
+//
+//     // Ensure to wait for addUserMedia to finish
+//     await manager.addUserGallery(username, req.files)
+//
+//     return res.send("Successfully uploaded " + req.files.length + " "
+//       + (req.files.length > 1 ? "files" : "file") + " to gallery")
+//     }
+//   )
+// })
 
 
 app.listen(API_PORT, () => console.log(`Server running on port ${API_PORT}`))

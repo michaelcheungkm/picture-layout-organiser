@@ -1,12 +1,11 @@
 # Backend
 
-Edit the file `backend/.config/directory.txt` to change working directory location. By default this is the folder `plo-data` in the home directory
+Edit the file `backend/run.sh` to change the data directory location - this is where all uploaded media content will be stored. By default this is the folder `.plo` in the home directory
 
-If required edit the port number in `run.sh`. This should match the port number entered in the front end config.
+If required edit the port number in `run.sh`. This should match the port number entered in the frontend config.
 
-<hr>
-Requires `ffmpeg` to be installed.
-<hr>
+* Requires `ffmpeg`  and `mongo` to be installed.
+* Ensure that the mongo data store path is set. This can be done with `mongod --dbpath <location>`. It is recommended to use `/data/db`.
 
 Run `npm start` to start the server
 
