@@ -35,7 +35,7 @@ import {
   listUsers,
   getUserContent,
   saveUserContent,
-  createAccount,
+  createUser,
   deleteAccount,
   uploadUserMedia,
   uploadUserGallery
@@ -323,7 +323,7 @@ const App = () => {
           newName = newName.trim()
           if (newName !== null && newName !== "") {
             // Create account then switch to that new account - if a duplicate name is entered, enter that account
-            createAccount(newName, backendAddress, function() {
+            createUser(newName, backendAddress, function() {
               // Update list of users
               listUsers(backendAddress, (users) => {
                 setUsers(users)

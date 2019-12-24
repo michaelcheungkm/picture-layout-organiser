@@ -35,8 +35,8 @@ export function saveUserContent(username, content, backendAddress, callback) {
   .then(callback)
 }
 
-export function createAccount(newName, backendAddress, callback) {
-  const query_url = getFormattedAddress(backendAddress) + '/createAccount'
+export function createUser(newName, backendAddress, callback) {
+  const query_url = getFormattedAddress(backendAddress) + '/createUser'
   axios.post(query_url, {
     'name': newName
   })

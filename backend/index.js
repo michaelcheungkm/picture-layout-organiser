@@ -26,16 +26,18 @@ app.get('/listUsers', (req, res) => {
   mongoManager.listUsers(users => res.send(users))
 })
 
-app.post('/createAccount', (req, res) => {
-  console.log("Call to createAccount")
+app.post('/createUser', (req, res) => {
+  console.log("Call to createUser")
   const { name } = req.body
-  try {
-    manager.createAccount(name)
-  } catch(err) {
-    res.status(422).send('Username already exists\n')
-    return
-  }
-  res.send('Added \"' + name + '\"\n')
+  mongoManager.createUser(name, (r, err) => {
+    if (err) {
+      console.log(err)
+      res.status(422).send('Username already exists\n')
+    } else {
+      console.log("else")
+      res.send('Added \"' + name + '\"\n')
+    }
+  })
 })
 
 app.post('/deleteAccount', (req, res) => {
