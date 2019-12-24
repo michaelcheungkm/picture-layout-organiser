@@ -15,6 +15,8 @@ MongoClient.connect(url, (err, client) => {
   db = client.db(dbName)
 })
 
+// TODO: manage garbage collection
+
 async function listUsers(callback) {
   const collection = db.collection('users')
   users = await collection
@@ -41,7 +43,6 @@ async function createUser(newName, callback) {
       name: newName,
       lockPos: INITIAL_LOCK_POS
   })
-
 }
 
 async function deleteUser(user) {
@@ -54,8 +55,17 @@ async function deleteUser(user) {
   await contentCollection.deleteMany({user: user})
 }
 
+async function getUserContent(username) {
+  const collection = db.collection('content')
+  userContent = await collection
+    .find({user: username})
+    .toArray()
+  return userContent
+}
+
 module.exports = {
   listUsers,
   createUser,
-  deleteUser
+  deleteUser,
+  getUserContent
 }

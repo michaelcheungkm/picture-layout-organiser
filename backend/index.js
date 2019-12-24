@@ -46,10 +46,11 @@ app.post('/deleteUser', async (req, res) => {
   res.send('Deleted \"' + user + '\"\n')
 })
 
-app.get('/:username/getUserContent', (req, res) => {
+app.get('/:username/getUserContent', async (req, res) => {
   console.log("Call to getUserContent")
   const username = req.params.username
-  res.send(manager.getUserContent(username))
+  userContent = await mongoManager.getUserContent(username)
+  res.send(userContent)
 })
 
 // TODO: more RESTful solution?
