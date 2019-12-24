@@ -1,20 +1,31 @@
 import React, {useState} from 'react'
 
-import './EditPage.css'
+import useStyles from './style'
 
 import Carousel from '../carousel/Carousel.js'
 
-import crossImage from '../../images/cross.svg'
-import binImage from '../../images/bin.svg'
+import {
+  Button,
+  TextField,
+  Dialog,
+  Grid
+} from '@material-ui/core/index'
 
-const EditPage = ({media, mediaType, caption, saveCaption, closePage, setGalleryItemAsGalleryHead, deleteImage}) => {
+import {
+  Delete as DeleteIcon,
+  Close as CloseIcon
+} from '@material-ui/icons'
+
+const EditPage = ({media, mediaType, caption, saveCaption, closePage, setGalleryItemAsGalleryHead, deleteImage, opened}) => {
+
+  const classes = useStyles()
 
   const [text, setText] = useState(caption)
 
   function generateMediaPreview(media, mediaType) {
     if (mediaType === 'video') {
       return (
-        <video className="video-preview" controls>
+        <video className={classes.videoPreview} controls>
           <source src={media} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
@@ -38,7 +49,7 @@ const EditPage = ({media, mediaType, caption, saveCaption, closePage, setGallery
       return (
         <div
           style={backgroundImageStyle}
-          className='image-preview'
+          className={classes.imagePreview}
         ></div>
       )
     }
@@ -47,22 +58,19 @@ const EditPage = ({media, mediaType, caption, saveCaption, closePage, setGallery
 
   function generateGalleryItemWrapper(itemPreview, itemIndex) {
     return (
-      <div className='gallery-item-wrapper'>
-        {
-          itemIndex === 0 &&
-          (
-            <a id='gallery-preview-head' />
-          )
-        }
+      <div className={classes.galleryItemWrapper}>
         {itemPreview}
         {
           itemIndex > 0 &&
           (
-            <button
+            <Button
+              className={classes.makeFirstButton}
+              variant='contained'
+              color='primary'
               onClick={() => setGalleryItemAsGalleryHead(itemIndex)}
             >
               Make first
-            </button>
+            </Button>
           )
         }
       </div>
@@ -70,33 +78,44 @@ const EditPage = ({media, mediaType, caption, saveCaption, closePage, setGallery
   }
 
   return (
-    <div className='edit-page'>
-      <img
-        src={crossImage}
-        alt='close'
-        className='exit-icon'
-        onClick={() => closePage()}
-      />
-      {generateMediaPreview(media, mediaType)}
-      <img
-        src={binImage}
-        alt='delete item'
-        className='media-delete-icon'
-        onClick={deleteImage}
-      />
-      <textarea
-        className={"caption-input-area"}
-        placeholder={"Enter a caption"}
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-      />
-      <button
-        id='save-caption-button'
-        onClick={() => saveCaption(text)}
-      >
-        Save
-      </button>
-    </div>
+    <Dialog
+      open={true /* whole component unmounted on close */}
+      onClose={closePage}
+    >
+      <div className={classes.editPage}>
+        <DeleteIcon
+          className={classes.mediaDeleteIcon}
+          onClick={deleteImage}
+        />
+        <CloseIcon
+          className={classes.exitIcon}
+          onClick={closePage}
+        />
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            {generateMediaPreview(media, mediaType)}
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              multiline
+              variant='outlined'
+              placeholder='Caption'
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Button
+              variant='contained'
+              color='primary'
+              onClick={() => saveCaption(text)}
+            >
+              Save
+            </Button>
+          </Grid>
+        </Grid>
+      </div>
+    </Dialog>
   )
 }
 
