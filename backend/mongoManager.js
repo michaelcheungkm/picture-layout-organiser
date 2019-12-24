@@ -1,4 +1,5 @@
-const MongoClient = require('mongodb').MongoClient
+const mongo = require('mongod')
+const MongoClient = mongo.MongoClient
 const ThumbnailGenerator = require('video-thumbnail-generator').default
 
 const mongoIP = '127.0.0.1'
@@ -60,8 +61,28 @@ async function getUserContent(username) {
   const collection = db.collection('content')
   userContent = await collection
     .find({user: username})
+    .sort({orderIndex: 1})
     .toArray()
   return userContent
+}
+
+async function updateContentOrder(username, idOrder, lockIndex) {
+  // Update orderIndex to match input
+  const contentCollection = db.collection('content')
+  for (var i = 0; i < idOrder.length; i++) {
+    var id = idOrder[i]
+    await contentCollection.updateOne(
+      {'_id': new mongo.ObjectID(id)},
+      {orderIndex: i}
+    )
+  }
+
+  // Update lockIndex
+  const userCollection = db.collection('users')
+  await userCollection.updateOne(
+    {name: username},
+    {lockPos: lockIndex}
+  )
 }
 
 async function generateThumbnails(files, targetDirectory) {
@@ -167,6 +188,7 @@ module.exports = {
   createUser,
   deleteUser,
   getUserContent,
+  updateContentOrder,
   addUserMedia,
   addUserGallery
 }

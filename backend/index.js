@@ -53,14 +53,13 @@ app.get('/:username/getUserContent', async (req, res) => {
   res.send(userContent)
 })
 
-// TODO: more RESTful solution?
-// app.post('/:username/saveUserContent', (req, res) => {
-//   console.log("Call to saveUserContent")
-//   const { content } = req.body
-//   const username = req.params.username
-//   manager.saveUserContent(username, content)
-//   res.send("Saved user content")
-// })
+app.post('/:username/updateContentOrder', async (req, res) => {
+  console.log("Call to updateContentOrder")
+  const { idOrder, lockIndex } = req.body
+  const username = req.params.username
+  await manager.saveUserContent(username, idOrder, lockIndex)
+  res.send("Saved user content")
+})
 
 // Multer to handle disk storage for uploads
 var storage = multer.diskStorage({
