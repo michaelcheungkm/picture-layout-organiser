@@ -33,8 +33,13 @@ const useStyles = makeStyles(theme => ({
   },
   mediaTypeIcon: {
     position: 'absolute',
-    right: 0,
-    bottom: 0
+    bottom: 0,
+    right: 0
+  },
+  captionedIcon: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0
   }
 }))
 
