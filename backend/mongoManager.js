@@ -15,18 +15,13 @@ MongoClient.connect(url, (err, client) => {
   db = client.db(dbName)
 })
 
-function listUsers(callback) {
+async function listUsers(callback) {
   const collection = db.collection('users')
-  collection
+  users = await collection
     .find({})
     .project({ name: 1, _id: 0 })
-    .toArray(function(err, users) {
-      if (err) {
-        console.log(err)
-        return
-      }
-      callback(users.map(u => u.name))
-    })
+    .toArray()
+  return users.map(u => u.name)
 }
 
 function createUser(newName, callback) {

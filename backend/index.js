@@ -21,9 +21,10 @@ app.use(bodyParser.json())
 // API calls
 /* ---------------------------------------------------------------------------*/
 
-app.get('/listUsers', (req, res) => {
+app.get('/listUsers', async (req, res) => {
   console.log("Call to listUsers")
-  mongoManager.listUsers(users => res.send(users))
+  users = await mongoManager.listUsers()
+  res.send(users)
 })
 
 app.post('/createUser', (req, res) => {
@@ -33,10 +34,9 @@ app.post('/createUser', (req, res) => {
     if (err) {
       console.log(err)
       res.status(422).send('Username already exists\n')
-    } else {
-      console.log("else")
-      res.send('Added \"' + name + '\"\n')
+      return
     }
+    res.send('Added \"' + name + '\"\n')
   })
 })
 
