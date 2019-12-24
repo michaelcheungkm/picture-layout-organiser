@@ -24,33 +24,24 @@ async function listUsers(callback) {
   return users.map(u => u.name)
 }
 
-function createUser(newName, callback) {
+async function createUser(newName, callback) {
   const collection = db.collection('users')
-  collection
-    .find({name: newName})
-    .toArray(function(err, users) {
-      if (err) {
-        console.log(err)
-        return
-      }
-      // Check if username already exists
-      if (users.length > 0) {
-        callback(null, 'Username already exists')
-        return
-      }
 
-      // Add new user
-      collection.insertOne({
-          name: newName,
-          lockPos: INITIAL_LOCK_POS
-        }, function(err, res) {
-          if (err) {
-            throw err
-          }
-          callback(res)
-        }
-      )
-    })
+  // Check for existing user
+  existingUser = await collection
+    .find({name: newName})
+    .toArray()
+
+  if (existingUser.length > 0) {
+    throw new Error('User with that name already exists')
+  }
+
+  // Add new user
+  await collection.insertOne({
+      name: newName,
+      lockPos: INITIAL_LOCK_POS
+  })
+
 }
 
 async function deleteUser(user) {

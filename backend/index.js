@@ -27,17 +27,16 @@ app.get('/listUsers', async (req, res) => {
   res.send(users)
 })
 
-app.post('/createUser', (req, res) => {
+app.post('/createUser', async (req, res) => {
   console.log("Call to createUser")
   const { name } = req.body
-  mongoManager.createUser(name, (r, err) => {
-    if (err) {
-      console.log(err)
-      res.status(422).send('Username already exists\n')
-      return
-    }
+  try {
+    await mongoManager.createUser(name)
     res.send('Added \"' + name + '\"\n')
-  })
+  } catch(err) {
+    console.log(err.message)
+    res.status(422).send(err.message + '\n')
+  }
 })
 
 app.post('/deleteUser', async (req, res) => {
