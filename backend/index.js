@@ -5,6 +5,7 @@ const fs = require('fs')
 const multer = require('multer')
 
 const manager = require('./manager.js')
+const mongoManager = require('./mongoManager.js')
 
 const app = express()
 const API_PORT = process.env.PORT_BASE
@@ -14,10 +15,15 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cors())
 app.use(bodyParser.json())
 
+
+
+
 // API calls
+/* ---------------------------------------------------------------------------*/
+
 app.get('/listUsers', (req, res) => {
   console.log("Call to listUsers")
-  res.send(manager.listUsers())
+  mongoManager.listUsers(users => res.send(users))
 })
 
 app.post('/createAccount', (req, res) => {
