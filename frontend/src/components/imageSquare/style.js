@@ -14,7 +14,7 @@ const useStyles = makeStyles(theme => ({
   },
   icon: {
     margin: theme.spacing(1),
-    width: '10%'
+    width: '15%'
   },
   clickable: {
     '&:hover': {

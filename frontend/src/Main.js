@@ -119,6 +119,7 @@ const App = () => {
   const [galleryUpload, setGalleryUpload] = useState(false)
 
   const fileUploaderRef = useRef(null)
+  const selectedRef = useRef(null)
 
   useEffect(() => {
     document.addEventListener("keydown", handleKeyDown, false)
@@ -152,12 +153,11 @@ const App = () => {
           console.log(err)
         }
 
-        // TODO: Relplace with better system (use refs?)
         // Scroll to moved selected item location
-        const selectedItemAnchor = document.getElementById('current-selected-item')
-        const anchorRect = selectedItemAnchor.getBoundingClientRect()
+        const anchorRect = selectedRef.current.getBoundingClientRect()
         const absoluteAnchorTop = anchorRect.top + window.pageYOffset
         const middleScrollPoint = absoluteAnchorTop - (window.innerHeight / 2)
+        console.log(middleScrollPoint)
         window.scrollTo(0, middleScrollPoint)
       }
     }
@@ -612,6 +612,7 @@ const App = () => {
           {content.map((c, index) => (
             <GridListTile key={index} cols={1}>
               <ImageSquare
+                innerRef={selectedIndex === index ? selectedRef : null}
                 media={c.media}
                 mediaType={c.mediaType}
                 captioned={c.caption !== ''}

@@ -9,7 +9,7 @@ import captionedIcon from '../../images/captioned.svg'
 import videoIcon from '../../images/video.svg'
 import galleryIcon from '../../images/gallery.svg'
 
-const ImageSquare = ({media, mediaType, thumbnail, selected, locked, captioned, toggleLock, handleClick, handleEditClick}) => {
+const ImageSquare = ({innerRef, media, mediaType, thumbnail, selected, locked, captioned, toggleLock, handleClick, handleEditClick}) => {
 
   const classes = useStyles()
 
@@ -36,16 +36,11 @@ const ImageSquare = ({media, mediaType, thumbnail, selected, locked, captioned, 
 
   return (
     <div
+      ref={innerRef}
       className={classes.imageSquare}
       style={{...backgroundImageStyle, opacity: selected ? 0.35 : 1}}
       onClick={handleClick}
     >
-      {
-        selected &&
-        (
-          <a id='current-selected-item' />
-        )
-      }
       <img
         src={locked ? padlock : ringCircle}
         alt={locked ? 'locked': 'unlocked'}
