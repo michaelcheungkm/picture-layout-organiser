@@ -1,4 +1,4 @@
-const mongo = require('mongod')
+const mongo = require('mongodb')
 const MongoClient = mongo.MongoClient
 const ThumbnailGenerator = require('video-thumbnail-generator').default
 
@@ -119,7 +119,7 @@ async function addUserMedia(username, files, targetDirectory) {
         'user': username,
         'media': f.filename,
         'mediaType': 'video',
-        'orderIndex': index
+        'orderIndex': index,
         'caption': '',
         'thumbnail': thumbnailMap.get(f.filename)
       })
@@ -129,7 +129,7 @@ async function addUserMedia(username, files, targetDirectory) {
         'user': username,
         'media': f.filename,
         'mediaType': 'image',
-        'orderIndex': index
+        'orderIndex': index,
         'caption': ''
       })
     }
