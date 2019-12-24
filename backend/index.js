@@ -40,11 +40,11 @@ app.post('/createUser', (req, res) => {
   })
 })
 
-app.post('/deleteAccount', (req, res) => {
-  console.log("Call to deleteAccount")
-  const { name } = req.body
-  manager.deleteAccount(name)
-  res.send('Deleted \"' + name + '\"\n')
+app.post('/deleteUser', async (req, res) => {
+  console.log("Call to deleteUser")
+  const { user } = req.body
+  await mongoManager.deleteUser(user)
+  res.send('Deleted \"' + user + '\"\n')
 })
 
 app.get('/:username/getUserContent', (req, res) => {

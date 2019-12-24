@@ -43,10 +43,10 @@ export function createUser(newName, backendAddress, callback) {
   .then(callback)
 }
 
-export function deleteAccount(username, backendAddress, callback) {
-  const query_url = getFormattedAddress(backendAddress) + '/deleteAccount'
+export function deleteUser(username, backendAddress, callback) {
+  const query_url = getFormattedAddress(backendAddress) + '/deleteUser'
   axios.post(query_url, {
-    'name': username
+    'user': username
   })
   .then(callback)
 }

@@ -58,7 +58,18 @@ function createUser(newName, callback) {
     })
 }
 
+async function deleteUser(user) {
+  // Remove user from users collection
+  const userCollection = db.collection('users')
+  await userCollection.deleteOne({ name: user })
+
+  // Remove any content associated with that user
+  const contentCollection = db.collection('content')
+  await contentCollection.deleteMany({user: user})
+}
+
 module.exports = {
   listUsers,
-  createUser
+  createUser,
+  deleteUser
 }

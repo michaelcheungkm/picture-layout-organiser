@@ -88,7 +88,7 @@ function createUser(name) {
   writeManagerSync(manager)
 }
 
-function deleteAccount(name) {
+function deleteUser(name) {
   var manager = readManagerSync()
 
   var users = [...manager.users]
@@ -196,7 +196,7 @@ module.exports = {
   getWorkingDirectory,
   listUsers,
   createUser,
-  deleteAccount,
+  deleteUser,
   getUserContent,
   saveUserContent,
   addUserMedia,

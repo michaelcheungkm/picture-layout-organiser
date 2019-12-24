@@ -36,7 +36,7 @@ import {
   getUserContent,
   saveUserContent,
   createUser,
-  deleteAccount,
+  deleteUser,
   uploadUserMedia,
   uploadUserGallery
   } from './adapters/ManagerAdapter'
@@ -524,7 +524,7 @@ const App = () => {
               if (backendAddress !== null && username !== EMPTY_USER && !uploading && editingIndex === NONE_INDEX) {
                 if (window.confirm("Are you sure you want to delete \"" + username + "\" from the organiser")) {
                   // Delete account, reread list of users and set current user to the empty user and content empty
-                  deleteAccount(username, backendAddress, function() {
+                  deleteUser(username, backendAddress, function() {
                     listUsers(backendAddress, (users) => {
                       setUsers(users)
                       setUsername(EMPTY_USER)
