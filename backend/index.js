@@ -65,7 +65,7 @@ app.post('/:username/updateContentOrder', async (req, res) => {
 var storage = multer.diskStorage({
       destination: function (req, file, cb) {
       // Set storage directory to working directory
-      cb(null, manager.getWorkingDirectory())
+      cb(null, DATA_DIRECTORY)
     },
     filename: function (req, file, cb) {
       // Rename files by prepending date to avoid name clashes

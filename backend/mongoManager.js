@@ -62,6 +62,7 @@ async function getUserContent(username) {
   userContent = await collection
     .find({user: username})
     .sort({orderIndex: 1})
+    .project({orderIndex: 0})
     .toArray()
   return userContent
 }
@@ -136,7 +137,7 @@ async function addUserMedia(username, files, targetDirectory) {
   })
 
   // Increase the orderIndex of all existing content for user
-  await db.collection('inventory').updateMany(
+  await collection.updateMany(
     { user: username },
     { $inc: { orderIndex: files.length}}
   )
@@ -175,7 +176,7 @@ async function addUserGallery(username, files, targetDirectory) {
   }
 
   // Increase the orderIndex of all existing content for user
-  await db.collection('inventory').updateMany(
+  await collection.updateMany(
     { user: username },
     { $inc: { orderIndex: 1}}
   )
