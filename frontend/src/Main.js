@@ -387,7 +387,6 @@ const App = () => {
   }
 
   function uploadCompleteCallback(res) {
-    console.log("In callback");
     if (!res.ok) {
       reportStatusMessage("Failed to upload, please try again", false)
     } else {

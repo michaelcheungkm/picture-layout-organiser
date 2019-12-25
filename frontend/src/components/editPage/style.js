@@ -59,7 +59,9 @@ const useStyles = makeStyles(theme => ({
     videoPreview: {
       width: '52vmin',
       border: 'solid 0.1vmin black',
-      outline: 'none'
+      outline: 'none',
+      display: 'block',
+      margin: 'auto'
     },
     captionInputArea: {
       width: '52vmin',

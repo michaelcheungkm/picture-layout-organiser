@@ -25,7 +25,7 @@ const EditPage = ({media, mediaType, caption, saveCaption, closePage, setGallery
   function generateMediaPreview(media, mediaType) {
     if (mediaType === 'video') {
       return (
-        <video className={classes.videoPreview} controls>
+        <video key={media} className={classes.videoPreview} controls>
           <source src={media} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
@@ -48,6 +48,7 @@ const EditPage = ({media, mediaType, caption, saveCaption, closePage, setGallery
       }
       return (
         <div
+          key={media}
           style={backgroundImageStyle}
           className={classes.imagePreview}
         ></div>
