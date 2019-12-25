@@ -17,7 +17,38 @@ MongoClient.connect(url, (err, client) => {
   db = client.db(dbName)
 })
 
-// TODO: manage garbage collection
+async function getAllMedia() {
+  const collection = db.collection('content')
+  const standard = await collection
+    .find({$or: [{ mediaType: 'image' }, { mediaType: 'video'}]})
+    .project({media: 1, _id: 0})
+    .toArray()
+    .then(arr => arr.map(m => m.media))
+
+  const thumbnails = await collection
+    .find({mediaType: 'video'})
+    .project({thumbnail: 1, _id: 0})
+    .toArray()
+    .then(arr => arr.map(m => m.thumbnail))
+
+  var allMedia = [...standard, ...thumbnails]
+
+
+  const galleries = await collection
+    .find({mediaType: 'gallery'})
+    .project({media: 1, _id: 0})
+    .toArray()
+    .then(arr => arr.map(m => m.media))
+
+  // Add all gallery vidoes and images
+  galleries.map(g => g.filter(c => c.mediaType === 'image' || c.mediaType === 'video').map(c => c.media))
+    .forEach(filesList => allMedia.push(...filesList))
+  // Add all gallery video thumbnails
+  galleries.map(g => g.filter(c => c.mediaType === 'video').map(c => c.thumbnail))
+    .forEach(filesList => allMedia.push(...filesList))
+
+  return allMedia
+}
 
 async function listUsers(callback) {
   const collection = db.collection('users')
@@ -62,28 +93,19 @@ async function getUserContent(username) {
   userContent = await collection
     .find({user: username})
     .sort({orderIndex: 1})
-    .project({orderIndex: 0})
+    .project({orderIndex: 0, _id: 0})
     .toArray()
   return userContent
 }
 
-async function updateContentOrder(username, idOrder, lockIndex) {
-  // Update orderIndex to match input
-  const contentCollection = db.collection('content')
-  for (var i = 0; i < idOrder.length; i++) {
-    var id = idOrder[i]
-    await contentCollection.updateOne(
-      {'_id': new mongo.ObjectID(id)},
-      {orderIndex: i}
-    )
+async function saveUserContent(username, content) {
+  const collection = db.collection('content')
+  // TODO: Replace this very wasteful method
+  await collection.deleteMany({user: username})
+  for (var i = 0; i < content.length; i++) {
+    content[i].orderIndex = i
   }
-
-  // Update lockIndex
-  const userCollection = db.collection('users')
-  await userCollection.updateOne(
-    {name: username},
-    {lockPos: lockIndex}
-  )
+  await collection.insertMany(content)
 }
 
 async function generateThumbnails(files, targetDirectory) {
@@ -148,7 +170,7 @@ async function addUserMedia(username, files, targetDirectory) {
 async function addUserGallery(username, files, targetDirectory) {
   const collection = db.collection('content')
 
-  var thumbnailMap = await generateThumbnails(files)
+  var thumbnailMap = await generateThumbnails(files, targetDirectory)
 
   var galleryContent = files.map(f => {
     if (f.mimetype.startsWith('video')) {
@@ -170,9 +192,11 @@ async function addUserGallery(username, files, targetDirectory) {
   })
 
   var galleryEntry = {
+    'user': username,
+    'orderIndex': 0,
     'media': galleryContent,
     'mediaType': 'gallery',
-    'caption': ''
+    'caption': '',
   }
 
   // Increase the orderIndex of all existing content for user
@@ -185,11 +209,12 @@ async function addUserGallery(username, files, targetDirectory) {
 }
 
 module.exports = {
+  getAllMedia,
   listUsers,
   createUser,
   deleteUser,
   getUserContent,
-  updateContentOrder,
+  saveUserContent,
   addUserMedia,
   addUserGallery
 }

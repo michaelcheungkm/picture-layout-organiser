@@ -10,16 +10,16 @@ const app = express()
 const API_PORT = process.env.PORT_BASE
 const DATA_DIRECTORY = process.env.DATA_DIRECTORY
 
+const GARBAGE_COLLECT_EVERY = 10
+
 // Setup
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cors())
 app.use(bodyParser.json())
 
 
-
-
 // API calls
-/* ---------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 
 app.get('/listUsers', async (req, res) => {
   console.log("Call to listUsers")
@@ -53,11 +53,19 @@ app.get('/:username/getUserContent', async (req, res) => {
   res.send(userContent)
 })
 
-app.post('/:username/updateContentOrder', async (req, res) => {
-  console.log("Call to updateContentOrder")
-  const { idOrder, lockIndex } = req.body
+var saves = 0
+// TODO: more RESTful approach - difficult as we currently bundle changes to save
+app.post('/:username/saveUserContent', async (req, res) => {
+  console.log("Call to saveUserContent")
+  const { content } = req.body
   const username = req.params.username
-  await manager.saveUserContent(username, idOrder, lockIndex)
+  await mongoManager.saveUserContent(username, content)
+
+  if (saves++ % GARBAGE_COLLECT_EVERY === 0) {
+    console.log("Garbage collect")
+    await garbageCollect()
+  }
+
   res.send("Saved user content")
 })
 
@@ -113,6 +121,21 @@ app.post('/:username/addUserGallery', (req, res) => {
     }
   )
 })
+
+/*----------------------------------------------------------------------------*/
+
+// Delete files that are no longer being referenced
+async function garbageCollect() {
+  const allMedia = await mongoManager.getAllMedia()
+
+  // Read directory
+  var allFiles = fs.readdirSync(DATA_DIRECTORY)
+  // Delete all files (except the manager) that are not referenced
+  allFiles
+    .filter(f => f !== 'manager.json')
+    .filter(f => !allMedia.includes(f))
+    .forEach(f => fs.unlinkSync(DATA_DIRECTORY + "/" + f))
+}
 
 
 app.listen(API_PORT, () => console.log(`Server running on port ${API_PORT}`))

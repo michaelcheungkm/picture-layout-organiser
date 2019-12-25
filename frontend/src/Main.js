@@ -157,13 +157,13 @@ const App = () => {
         const anchorRect = selectedRef.current.getBoundingClientRect()
         const absoluteAnchorTop = anchorRect.top + window.pageYOffset
         const middleScrollPoint = absoluteAnchorTop - (window.innerHeight / 2)
-        console.log(middleScrollPoint)
         window.scrollTo(0, middleScrollPoint)
       }
     }
   }
 
   function formatContent(content) {
+    // Add backend host address
     var newContent = [...content]
     var imageHostPrefix = getFormattedAddress(imageHostAddress) + '/'
 
@@ -196,6 +196,7 @@ const App = () => {
   }
 
   function stripContentFormat(formattedContent) {
+    // Remove backend host address
     var newContent = [...formattedContent]
     var imageHostPrefix = getFormattedAddress(imageHostAddress) + '/'
 
@@ -386,6 +387,7 @@ const App = () => {
   }
 
   function uploadCompleteCallback(res) {
+    console.log("In callback");
     if (!res.ok) {
       reportStatusMessage("Failed to upload, please try again", false)
     } else {
