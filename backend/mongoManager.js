@@ -105,7 +105,9 @@ async function saveUserContent(username, content) {
   for (var i = 0; i < content.length; i++) {
     content[i].orderIndex = i
   }
-  await collection.insertMany(content)
+  if (content.length > 0) {
+    await collection.insertMany(content)
+  }
 }
 
 async function generateThumbnails(files, targetDirectory) {
