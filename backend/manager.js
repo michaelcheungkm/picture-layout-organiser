@@ -72,7 +72,7 @@ function listUsers() {
   return manager.users.map(u => u.name)
 }
 
-function createAccount(name) {
+function createUser(name) {
   var manager = readManagerSync()
 
   if (listUsers().includes(name)) {
@@ -88,7 +88,7 @@ function createAccount(name) {
   writeManagerSync(manager)
 }
 
-function deleteAccount(name) {
+function deleteUser(name) {
   var manager = readManagerSync()
 
   var users = [...manager.users]
@@ -195,8 +195,8 @@ async function addUserGallery(username, files) {
 module.exports = {
   getWorkingDirectory,
   listUsers,
-  createAccount,
-  deleteAccount,
+  createUser,
+  deleteUser,
   getUserContent,
   saveUserContent,
   addUserMedia,

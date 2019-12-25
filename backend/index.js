@@ -4,53 +4,68 @@ const cors = require('cors')
 const fs = require('fs')
 const multer = require('multer')
 
-const manager = require('./manager.js')
+const mongoManager = require('./mongoManager.js')
 
 const app = express()
 const API_PORT = process.env.PORT_BASE
+const DATA_DIRECTORY = process.env.DATA_DIRECTORY
+
+const GARBAGE_COLLECT_EVERY = 10
 
 // Setup
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cors())
 app.use(bodyParser.json())
 
+
 // API calls
-app.get('/listUsers', (req, res) => {
+/*----------------------------------------------------------------------------*/
+
+app.get('/listUsers', async (req, res) => {
   console.log("Call to listUsers")
-  res.send(manager.listUsers())
+  users = await mongoManager.listUsers()
+  res.send(users)
 })
 
-app.post('/createAccount', (req, res) => {
-  console.log("Call to createAccount")
+app.post('/createUser', async (req, res) => {
+  console.log("Call to createUser")
   const { name } = req.body
   try {
-    manager.createAccount(name)
+    await mongoManager.createUser(name)
+    res.send('Added \"' + name + '\"\n')
   } catch(err) {
-    res.status(422).send('Username already exists\n')
-    return
+    console.log(err.message)
+    res.status(422).send(err.message + '\n')
   }
-  res.send('Added \"' + name + '\"\n')
 })
 
-app.post('/deleteAccount', (req, res) => {
-  console.log("Call to deleteAccount")
-  const { name } = req.body
-  manager.deleteAccount(name)
-  res.send('Deleted \"' + name + '\"\n')
+app.post('/deleteUser', async (req, res) => {
+  console.log("Call to deleteUser")
+  const { user } = req.body
+  await mongoManager.deleteUser(user)
+  res.send('Deleted \"' + user + '\"\n')
 })
 
-app.get('/:username/getUserContent', (req, res) => {
+app.get('/:username/getUserContent', async (req, res) => {
   console.log("Call to getUserContent")
   const username = req.params.username
-  res.send(manager.getUserContent(username))
+  userContent = await mongoManager.getUserContent(username)
+  res.send(userContent)
 })
 
-// TODO: more RESTful solution?
-app.post('/:username/saveUserContent', (req, res) => {
+var saves = 0
+// TODO: more RESTful approach - difficult as we currently bundle changes to save
+app.post('/:username/saveUserContent', async (req, res) => {
   console.log("Call to saveUserContent")
   const { content } = req.body
   const username = req.params.username
-  manager.saveUserContent(username, content)
+  await mongoManager.saveUserContent(username, content)
+
+  if (saves++ % GARBAGE_COLLECT_EVERY === 0) {
+    console.log("Garbage collect")
+    await garbageCollect()
+  }
+
   res.send("Saved user content")
 })
 
@@ -58,7 +73,7 @@ app.post('/:username/saveUserContent', (req, res) => {
 var storage = multer.diskStorage({
       destination: function (req, file, cb) {
       // Set storage directory to working directory
-      cb(null, manager.getWorkingDirectory())
+      cb(null, DATA_DIRECTORY)
     },
     filename: function (req, file, cb) {
       // Rename files by prepending date to avoid name clashes
@@ -79,7 +94,7 @@ app.post('/:username/addUserMedia', (req, res) => {
     }
 
     // Ensure to wait for addUserMedia to finish
-    await manager.addUserMedia(username, req.files)
+    await mongoManager.addUserMedia(username, req.files, DATA_DIRECTORY)
 
     return res.send("Successfully uploaded " + req.files.length + " "
       + (req.files.length > 1 ? "files" : "file"))
@@ -99,13 +114,28 @@ app.post('/:username/addUserGallery', (req, res) => {
     }
 
     // Ensure to wait for addUserMedia to finish
-    await manager.addUserGallery(username, req.files)
+    await mongoManager.addUserGallery(username, req.files, DATA_DIRECTORY)
 
     return res.send("Successfully uploaded " + req.files.length + " "
       + (req.files.length > 1 ? "files" : "file") + " to gallery")
     }
   )
 })
+
+/*----------------------------------------------------------------------------*/
+
+// Delete files that are no longer being referenced
+async function garbageCollect() {
+  const allMedia = await mongoManager.getAllMedia()
+
+  // Read directory
+  var allFiles = fs.readdirSync(DATA_DIRECTORY)
+  // Delete all files (except the manager) that are not referenced
+  allFiles
+    .filter(f => f !== 'manager.json')
+    .filter(f => !allMedia.includes(f))
+    .forEach(f => fs.unlinkSync(DATA_DIRECTORY + "/" + f))
+}
 
 
 app.listen(API_PORT, () => console.log(`Server running on port ${API_PORT}`))

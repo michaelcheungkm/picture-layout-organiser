@@ -35,8 +35,8 @@ import {
   listUsers,
   getUserContent,
   saveUserContent,
-  createAccount,
-  deleteAccount,
+  createUser,
+  deleteUser,
   uploadUserMedia,
   uploadUserGallery
   } from './adapters/ManagerAdapter'
@@ -157,13 +157,13 @@ const App = () => {
         const anchorRect = selectedRef.current.getBoundingClientRect()
         const absoluteAnchorTop = anchorRect.top + window.pageYOffset
         const middleScrollPoint = absoluteAnchorTop - (window.innerHeight / 2)
-        console.log(middleScrollPoint)
         window.scrollTo(0, middleScrollPoint)
       }
     }
   }
 
   function formatContent(content) {
+    // Add backend host address
     var newContent = [...content]
     var imageHostPrefix = getFormattedAddress(imageHostAddress) + '/'
 
@@ -196,6 +196,7 @@ const App = () => {
   }
 
   function stripContentFormat(formattedContent) {
+    // Remove backend host address
     var newContent = [...formattedContent]
     var imageHostPrefix = getFormattedAddress(imageHostAddress) + '/'
 
@@ -323,7 +324,7 @@ const App = () => {
           newName = newName.trim()
           if (newName !== null && newName !== "") {
             // Create account then switch to that new account - if a duplicate name is entered, enter that account
-            createAccount(newName, backendAddress, function() {
+            createUser(newName, backendAddress, function() {
               // Update list of users
               listUsers(backendAddress, (users) => {
                 setUsers(users)
@@ -386,6 +387,7 @@ const App = () => {
   }
 
   function uploadCompleteCallback(res) {
+    console.log("In callback");
     if (!res.ok) {
       reportStatusMessage("Failed to upload, please try again", false)
     } else {
@@ -524,7 +526,7 @@ const App = () => {
               if (backendAddress !== null && username !== EMPTY_USER && !uploading && editingIndex === NONE_INDEX) {
                 if (window.confirm("Are you sure you want to delete \"" + username + "\" from the organiser")) {
                   // Delete account, reread list of users and set current user to the empty user and content empty
-                  deleteAccount(username, backendAddress, function() {
+                  deleteUser(username, backendAddress, function() {
                     listUsers(backendAddress, (users) => {
                       setUsers(users)
                       setUsername(EMPTY_USER)
