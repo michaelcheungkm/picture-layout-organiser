@@ -25,3 +25,5 @@ yarn-error.log*
 
 # End of default
 .env
+*.zip
+backend/export
