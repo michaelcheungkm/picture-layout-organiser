@@ -26,6 +26,7 @@ import { Delete as DeleteIcon } from '@material-ui/icons'
 import ImageSquare from './components/imageSquare/ImageSquare'
 import StatusMessage from './components/statusMessage/StatusMessage'
 import EditPage from './components/editPage/EditPage'
+import Dropzone from './components/dropzone/Dropzone'
 
 import arraySwap from './ArraySwap'
 import partition from './Partition'
@@ -400,8 +401,8 @@ const App = () => {
     setUploading(false)
   }
 
-  function handleFilesSelected(e) {
-    var allowingFiles = partition(e.target.files, f => ALLOWED_MIME_TYPES.includes(f.type))
+  function handleFilesSelected(files) {
+    var allowingFiles = partition(files, f => ALLOWED_MIME_TYPES.includes(f.type))
     var validFiles = allowingFiles.pass
     var disallowedFiles = allowingFiles.fail
 
@@ -438,10 +439,6 @@ const App = () => {
         )
       }
     }
-
-    // Remove any file from selection
-    // Causes confusing behaviour when selecting the same file twice in a row otherwise due to onChange
-    e.target.value = null
   }
 
 
@@ -467,7 +464,12 @@ const App = () => {
         ref={fileUploaderRef}
         style={{display: "none"}}
         disabled={username === EMPTY_USER || !saved || uploading || editingIndex !== NONE_INDEX}
-        onChange={handleFilesSelected}
+        onChange={e => {
+          handleFilesSelected(e.target.files)
+          // Remove any file from selection
+          // Causes confusing behaviour when selecting the same file twice in a row otherwise due to onChange
+          e.target.value = null
+        }}
       />
     </span>
   )
@@ -598,60 +600,66 @@ const App = () => {
       className={classes.gridContent}
       style={{'display': uploading ? 'none' : 'block'}}
     >
-      <Paper className={classes.gridPaper}>
-        <Typography
-          variant='h5'
-          className={classes.statusText}
-        >
-          {saved ? "Content is saved and up-to-date" : "Saving"}
-        </Typography>
-        <GridList
-          cols={NUM_COLS}
-          cellHeight='auto'
-          spacing={0}
-        >
-          {content.map((c, index) => (
-            <GridListTile key={index} cols={1}>
-              <ImageSquare
-                innerRef={selectedIndex === index ? selectedRef : null}
-                media={c.media}
-                mediaType={c.mediaType}
-                captioned={c.caption !== ''}
-                thumbnail={c.thumbnail}
-                selected={selectedIndex === index}
-                locked={c.locked}
-                toggleLock={function(e) {
-                  // Disabled when editing - otherwise lock up to here
-                  e.stopPropagation()
-                  if (editingIndex === NONE_INDEX) {
-                    lockContentAfterIndex(index)
-                  }
-                }}
-                handleClick={function() {
-                  // Disabled when editing, else if not locked, select item
-                  if (editingIndex === NONE_INDEX) {
-                    if (!isContentLocked(index)) {
-                      if (selectedIndex === index) {
-                        deselectSelectedItem()
-                      } else {
-                        setSelectedIndex(index)
+      <Dropzone
+        dragEnter={() => console.log("Enter")}
+        dragLeave={() => console.log("Leave")}
+        drop={console.log}
+      >
+        <Paper className={classes.gridPaper}>
+          <Typography
+            variant='h5'
+            className={classes.statusText}
+          >
+            {saved ? "Content is saved and up-to-date" : "Saving"}
+          </Typography>
+          <GridList
+            cols={NUM_COLS}
+            cellHeight='auto'
+            spacing={0}
+          >
+            {content.map((c, index) => (
+              <GridListTile key={index} cols={1}>
+                <ImageSquare
+                  innerRef={selectedIndex === index ? selectedRef : null}
+                  media={c.media}
+                  mediaType={c.mediaType}
+                  captioned={c.caption !== ''}
+                  thumbnail={c.thumbnail}
+                  selected={selectedIndex === index}
+                  locked={c.locked}
+                  toggleLock={function(e) {
+                    // Disabled when editing - otherwise lock up to here
+                    e.stopPropagation()
+                    if (editingIndex === NONE_INDEX) {
+                      lockContentAfterIndex(index)
+                    }
+                  }}
+                  handleClick={function() {
+                    // Disabled when editing, else if not locked, select item
+                    if (editingIndex === NONE_INDEX) {
+                      if (!isContentLocked(index)) {
+                        if (selectedIndex === index) {
+                          deselectSelectedItem()
+                        } else {
+                          setSelectedIndex(index)
+                        }
                       }
                     }
-                  }
-                }}
-                handleEditClick={function(e) {
-                  // If not editing something else, choose this for editing
-                  e.stopPropagation()
-                  if (editingIndex === NONE_INDEX) {
-                    setEditingIndex(index)
-                    setSelectedIndex(NONE_INDEX)
-                  }
-                }}
-              />
-            </GridListTile>
-          ))}
-        </GridList>
-      </Paper>
+                  }}
+                  handleEditClick={function(e) {
+                    // If not editing something else, choose this for editing
+                    e.stopPropagation()
+                    if (editingIndex === NONE_INDEX) {
+                      setEditingIndex(index)
+                      setSelectedIndex(NONE_INDEX)
+                    }
+                  }}
+                />
+              </GridListTile>
+            ))}
+          </GridList>
+        </Paper>
+      </Dropzone>
     </Container>
   )
 
