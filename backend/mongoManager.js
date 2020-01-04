@@ -6,8 +6,6 @@ const mongoIP = '127.0.0.1'
 const url = 'mongodb://' + mongoIP + ':27017';
 const dbName = 'pictureLayoutOrganiser'
 
-const INITIAL_LOCK_POS = -1
-
 var db
 MongoClient.connect(url, (err, client) => {
   if (err) {
@@ -73,8 +71,7 @@ async function createUser(newName, callback) {
 
   // Add new user
   await collection.insertOne({
-      name: newName,
-      lockPos: INITIAL_LOCK_POS
+      name: newName
   })
 }
 
