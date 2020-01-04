@@ -603,7 +603,7 @@ const App = () => {
       <Dropzone
         dragEnter={() => console.log("Enter")}
         dragLeave={() => console.log("Leave")}
-        drop={console.log}
+        drop={files => handleFilesSelected(files)}
       >
         <Paper className={classes.gridPaper}>
           <Typography
