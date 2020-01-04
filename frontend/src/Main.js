@@ -441,6 +441,10 @@ const App = () => {
     }
   }
 
+  function uploadDisabled() {
+    return username === EMPTY_USER || !saved || uploading || editingIndex !== NONE_INDEX
+  }
+
 
 
 
@@ -463,7 +467,7 @@ const App = () => {
         id="add-file"
         ref={fileUploaderRef}
         style={{display: "none"}}
-        disabled={username === EMPTY_USER || !saved || uploading || editingIndex !== NONE_INDEX}
+        disabled={uploadDisabled()}
         onChange={e => {
           handleFilesSelected(e.target.files)
           // Remove any file from selection
@@ -602,7 +606,11 @@ const App = () => {
     >
       <Dropzone
         fades
-        drop={files => handleFilesSelected(files)}
+        drop={files => {
+          if (!uploadDisabled()) {
+            handleFilesSelected(files)
+          }
+        }}
       >
         <Paper className={classes.gridPaper}>
           <Typography
