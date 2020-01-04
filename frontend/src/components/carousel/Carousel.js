@@ -6,7 +6,7 @@ import {
   Typography
 } from '@material-ui/core/index'
 
-const Recipe = ({slides, stringIfEmpty}) => {
+const Carousel = ({slides, stringIfEmpty}) => {
 
   const classes = useStyles()
 
@@ -35,4 +35,4 @@ export function Slide(props){
   )
 }
 
-export default Recipe
+export default Carousel
