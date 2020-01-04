@@ -7,7 +7,20 @@ If required edit the port number in `run.sh`. This should match the port number 
 * Requires `ffmpeg`  and `mongo` to be installed.
 * Ensure that the mongo data store path is set. This can be done with `mongod --dbpath <location>`. It is recommended to use `/data/db`.
 
-Run `npm start` to start the server
+<hr>
+
+## Available Scripts
+
+### `npm start`
+Runs the backend application
+
+### `plo-export`
+Saves all stored content to `export.zip`
+
+### `plo-import`
+Restores all content from a previous export
+Usage: `./plo-import export.zip`
+
 
 # Frontend
 Before running this project, create a `.env` file in the frontend directory with the contents:
@@ -17,8 +30,6 @@ Before running this project, create a `.env` file in the frontend directory with
 The default backend port number is 8008 (N.B: The backend actually uses two successive ports starting with the given port number).
 
 <hr>
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
 
