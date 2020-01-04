@@ -601,8 +601,7 @@ const App = () => {
       style={{'display': uploading ? 'none' : 'block'}}
     >
       <Dropzone
-        dragEnter={() => console.log("Enter")}
-        dragLeave={() => console.log("Leave")}
+        fades
         drop={files => handleFilesSelected(files)}
       >
         <Paper className={classes.gridPaper}>
