@@ -17,7 +17,7 @@ const ImageSquare = ({innerRef, media, mediaType, thumbnail, selected, locked, c
     // Decide backround image for ImageSquare
     if (mediaType === 'video'){
       return {
-        'backgroundImage': 'url(\"' + thumbnail + '\")'
+        'backgroundImage': 'url("' + thumbnail + '")'
       }
     } else if (mediaType === 'gallery') {
       var galleryHead = media[0]
@@ -25,7 +25,7 @@ const ImageSquare = ({innerRef, media, mediaType, thumbnail, selected, locked, c
     } else if (mediaType === 'image') {
       // Standard image
       return {
-        'backgroundImage': 'url(\"' + media + '\")'
+        'backgroundImage': 'url("' + media + '")'
       }
     }
     throw new Error("Unknown media type")
