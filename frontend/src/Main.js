@@ -221,6 +221,8 @@ const App = () => {
     }
   }, [content, delayedSaveAfterLastEdit, isContentLocked, selectedIndex])
 
+  // ==========================================================================
+
   useEffect(() => {
     if (SELF_BACKEND) {
       // Populate state with list of users
@@ -521,7 +523,7 @@ const App = () => {
                     setImageHostAddress(hosts.imageHost)
 
                     // Populate state with list of users
-                    listUsers(backendAddress, users => {
+                    listUsers(hosts.backend, users => {
                       setUsers(users)
                     })
                   }
