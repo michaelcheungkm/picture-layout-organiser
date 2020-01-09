@@ -1,5 +1,7 @@
 import React, {useState} from 'react'
 
+import { withSnackbar } from 'notistack'
+
 import useStyles from './style'
 
 import Carousel from '../carousel/Carousel.js'
@@ -16,7 +18,7 @@ import {
   Close as CloseIcon
 } from '@material-ui/icons'
 
-const EditPage = ({media, mediaType, caption, saveCaption, closePage, setGalleryItemAsGalleryHead, deleteImage, opened}) => {
+const EditPage = ({media, mediaType, caption, saveCaption, closePage, setGalleryItemAsGalleryHead, deleteImage, opened, enqueueSnackbar}) => {
 
   const classes = useStyles()
 
@@ -110,7 +112,10 @@ const EditPage = ({media, mediaType, caption, saveCaption, closePage, setGallery
             <Button
               variant='contained'
               color='primary'
-              onClick={() => saveCaption(text)}
+              onClick={() => {
+                saveCaption(text)
+                enqueueSnackbar('Saving caption', {variant: 'info'})
+              }}
             >
               Save
             </Button>
@@ -121,4 +126,4 @@ const EditPage = ({media, mediaType, caption, saveCaption, closePage, setGallery
   )
 }
 
-export default EditPage
+export default withSnackbar(EditPage)
