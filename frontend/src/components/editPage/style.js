@@ -65,11 +65,6 @@ const useStyles = makeStyles(theme => ({
     },
     captionInputArea: {
       width: '52vmin',
-      height: 'calc(90vmin - (2 * 3vmin) - 2vmin - 52vmin - 3.5em)',
-      padding: '0.5vmin',
-      margin: 'auto',
-      marginTop: '2vmin',
-      border: 'solid 0.1vmin black'
     },
     saveCaptionButton: {
       width: '52vmin',

@@ -101,6 +101,7 @@ const EditPage = ({media, mediaType, caption, saveCaption, closePage, setGallery
               multiline
               variant='outlined'
               placeholder='Caption'
+              className={classes.captionInputArea}
               value={text}
               onChange={(e) => setText(e.target.value)}
             />
