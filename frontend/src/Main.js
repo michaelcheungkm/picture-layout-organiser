@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react'
+import React, {useState, useEffect, useRef, useCallback} from 'react'
 import axios from 'axios'
 
 import useStyles from './style'
@@ -128,21 +128,66 @@ const App = () => {
   const selectedRef = useRef(null)
 
 
-  useEffect(() => {
-    if (SELF_BACKEND) {
-      // Populate state with list of users
-      listUsers(backendAddress, users => {
-        setUsers(users)
-      })
+  // useCallback functions need to be defined first
+  // ==========================================================================
+
+  const stripContentFormat = useCallback(formattedContent => {
+    // Remove backend host address
+    var newContent = [...formattedContent]
+    var imageHostPrefix = getFormattedAddress(imageHostAddress) + '/'
+
+    return newContent.map(c => {
+      var contentItem = {...c}
+      if (contentItem.mediaType === 'image' || contentItem.mediaType === 'video') {
+        contentItem.media = contentItem.media.replace(imageHostPrefix, '')
+        if (contentItem.mediaType === 'video') {
+          contentItem.thumbnail = contentItem.thumbnail.replace(imageHostPrefix, '')
+        }
+      } else if (contentItem.mediaType === 'gallery') {
+        contentItem.media = contentItem.media.map(galleryItem => {
+          if (galleryItem.mediaType === 'image') {
+            return {
+              'media': galleryItem.media.replace(imageHostPrefix, ''),
+              'mediaType': 'image'
+            }
+          } else if (galleryItem.mediaType === 'video') {
+            return {
+              'media': galleryItem.media.replace(imageHostPrefix, ''),
+              'mediaType': 'video',
+              'thumbnail': galleryItem.thumbnail.replace(imageHostPrefix, ''),
+            }
+          }
+          throw new Error("Unknown media type")
+        })
+      }
+      return contentItem
+    })
+  }, [imageHostAddress])
+
+  // 2 seconds after last update (not necessarily this call), issue a save
+  const delayedSaveAfterLastEdit = useCallback(contentToSave => {
+    const delay = 2000
+    lastUpdate = Date.now()
+    setTimeout(function(){
+      if (Date.now() - lastUpdate > delay - 100) {
+        var strippedContent = stripContentFormat(contentToSave)
+        saveUserContent(username, strippedContent, backendAddress, function(){
+          setSaved(true)
+        })
+      }
+    }, delay)
+  }, [backendAddress, stripContentFormat, username])
+
+  const isContentLocked = useCallback(index => {
+    // N.B: content outside of the array is said to be locked also
+    if (index < 0 || index >= content.length) {
+      return true
     }
-
-    document.addEventListener("keydown", handleKeyDown, false)
-    return () => document.removeEventListener("keydown", handleKeyDown, false)
-  }, [backendAddress])
-
+    return content[index].locked
+  }, [content])
 
   // Universal keyDown handler - used for moving selected item
-  function handleKeyDown(e) {
+  const handleKeyDown = useCallback(e => {
     // On ESC, deselect items and close edit page
     if (e.keyCode === ESC_KEY) {
       setSelectedIndex(NONE_INDEX)
@@ -174,7 +219,19 @@ const App = () => {
         window.scrollTo(0, middleScrollPoint)
       }
     }
-  }
+  }, [content, delayedSaveAfterLastEdit, isContentLocked, selectedIndex])
+
+  useEffect(() => {
+    if (SELF_BACKEND) {
+      // Populate state with list of users
+      listUsers(backendAddress, users => {
+        setUsers(users)
+      })
+    }
+
+    document.addEventListener("keydown", handleKeyDown, false)
+    return () => document.removeEventListener("keydown", handleKeyDown, false)
+  }, [backendAddress, handleKeyDown])
 
   function formatContent(content) {
     // Add backend host address
@@ -209,63 +266,8 @@ const App = () => {
     })
   }
 
-  function stripContentFormat(formattedContent) {
-    // Remove backend host address
-    var newContent = [...formattedContent]
-    var imageHostPrefix = getFormattedAddress(imageHostAddress) + '/'
-
-    return newContent.map(c => {
-      var contentItem = {...c}
-      if (contentItem.mediaType === 'image' || contentItem.mediaType === 'video') {
-        contentItem.media = contentItem.media.replace(imageHostPrefix, '')
-        if (contentItem.mediaType === 'video') {
-          contentItem.thumbnail = contentItem.thumbnail.replace(imageHostPrefix, '')
-        }
-      } else if (contentItem.mediaType === 'gallery') {
-        contentItem.media = contentItem.media.map(galleryItem => {
-          if (galleryItem.mediaType === 'image') {
-            return {
-              'media': galleryItem.media.replace(imageHostPrefix, ''),
-              'mediaType': 'image'
-            }
-          } else if (galleryItem.mediaType === 'video') {
-            return {
-              'media': galleryItem.media.replace(imageHostPrefix, ''),
-              'mediaType': 'video',
-              'thumbnail': galleryItem.thumbnail.replace(imageHostPrefix, ''),
-            }
-          }
-          throw new Error("Unknown media type")
-        })
-      }
-      return contentItem
-    })
-  }
-
-  // 2 seconds after last update (not necessarily this call), issue a save
-  function delayedSaveAfterLastEdit(contentToSave) {
-    const delay = 2000
-    lastUpdate = Date.now()
-    setTimeout(function(){
-      if (Date.now() - lastUpdate > delay - 100) {
-        var strippedContent = stripContentFormat(contentToSave)
-        saveUserContent(username, strippedContent, backendAddress, function(){
-          setSaved(true)
-        })
-      }
-    }, delay)
-  }
-
   function deselectSelectedItem() {
     setSelectedIndex(NONE_INDEX)
-  }
-
-  function isContentLocked(index) {
-    // N.B: content outside of the array is said to be locked also
-    if (index < 0 || index >= content.length) {
-      return true
-    }
-    return content[index].locked
   }
 
   // Set all content items at and above the given index to locked
