@@ -45,6 +45,8 @@ import {
 require('dotenv').config()
 
 const SELF_BACKEND = process.env.REACT_APP_SELF_BACKEND === 'true'
+
+console.log(SELF_BACKEND);
 const HOSTNAME = window.location.hostname
 
 const NUM_COLS = 3
@@ -508,7 +510,7 @@ const App = () => {
   var topBar = (
     <div className={classes.topBar}>
       <Grid container className={classes.adminBar}>
-        { SELF_BACKEND ||
+        { SELF_BACKEND ? <div></div> :
           <Grid item>
             <TextField
               style={{width:'auto'}}
