@@ -48,7 +48,7 @@ const EditPage = ({media, mediaType, caption, saveCaption, closePage, setGallery
     } else if (mediaType === 'image') {
       // Standard image
       var backgroundImageStyle = {
-        'backgroundImage': 'url(' + media + ')'
+        'backgroundImage': 'url(\"' + media + '\")'
       }
       return (
         <div
