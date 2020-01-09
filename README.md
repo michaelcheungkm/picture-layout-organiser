@@ -25,9 +25,13 @@ Usage: `./plo-import export.zip`
 # Frontend
 Before running this project, create a `.env` file in the frontend directory with the contents:
 
-```REACT_APP_BACKEND_PORT_BASE=<backend port number>```.
+```
+  REACT_APP_BACKEND_PORT_BASE=<backend port number>
+  REACT_APP_SELF_BACKEND=<true|false>
+```
 
-The default backend port number is 8008 (N.B: The backend actually uses two successive ports starting with the given port number).
+* The default backend port number is 8008 (N.B: The backend actually uses two successive ports starting with the given port number).
+* If you host the frontend on the same server as the backend, you can remove the need for inputting the backend address by setting the REACT_APP_SELF_BACKEND vairable to `true`
 
 <hr>
 

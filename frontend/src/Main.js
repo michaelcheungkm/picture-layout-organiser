@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react'
+import React, {useState, useEffect, useRef, useCallback} from 'react'
 import axios from 'axios'
 
 import useStyles from './style'
@@ -43,6 +43,11 @@ import {
   } from './adapters/ManagerAdapter'
 
 require('dotenv').config()
+
+const SELF_BACKEND = process.env.REACT_APP_SELF_BACKEND === 'true'
+
+console.log(SELF_BACKEND);
+const HOSTNAME = window.location.hostname
 
 const NUM_COLS = 3
 const MAX_IN_GALLERY = 10
@@ -106,8 +111,10 @@ function downloadUrl(url) {
 const App = () => {
   const classes = useStyles()
 
-  const [backendAddress, setBackendAddress] = useState(null)
-  const [imageHostAddress, setImageHostAddress] = useState(null)
+  const autoHosts = getHosts(HOSTNAME)
+
+  const [backendAddress, setBackendAddress] = useState(SELF_BACKEND ? autoHosts.backend : null)
+  const [imageHostAddress, setImageHostAddress] = useState(SELF_BACKEND ? autoHosts.imageHost : null)
   const [users, setUsers] = useState([])
   const [selectedIndex, setSelectedIndex] = useState(NONE_INDEX)
   const [editingIndex, setEditingIndex] = useState(NONE_INDEX)
@@ -122,14 +129,67 @@ const App = () => {
   const fileUploaderRef = useRef(null)
   const selectedRef = useRef(null)
 
-  useEffect(() => {
-    document.addEventListener("keydown", handleKeyDown, false)
-    return () => document.removeEventListener("keydown", handleKeyDown, false)
-  })
 
+  // useCallback functions need to be defined first
+  // ==========================================================================
+
+  const stripContentFormat = useCallback(formattedContent => {
+    // Remove backend host address
+    var newContent = [...formattedContent]
+    var imageHostPrefix = getFormattedAddress(imageHostAddress) + '/'
+
+    return newContent.map(c => {
+      var contentItem = {...c}
+      if (contentItem.mediaType === 'image' || contentItem.mediaType === 'video') {
+        contentItem.media = contentItem.media.replace(imageHostPrefix, '')
+        if (contentItem.mediaType === 'video') {
+          contentItem.thumbnail = contentItem.thumbnail.replace(imageHostPrefix, '')
+        }
+      } else if (contentItem.mediaType === 'gallery') {
+        contentItem.media = contentItem.media.map(galleryItem => {
+          if (galleryItem.mediaType === 'image') {
+            return {
+              'media': galleryItem.media.replace(imageHostPrefix, ''),
+              'mediaType': 'image'
+            }
+          } else if (galleryItem.mediaType === 'video') {
+            return {
+              'media': galleryItem.media.replace(imageHostPrefix, ''),
+              'mediaType': 'video',
+              'thumbnail': galleryItem.thumbnail.replace(imageHostPrefix, ''),
+            }
+          }
+          throw new Error("Unknown media type")
+        })
+      }
+      return contentItem
+    })
+  }, [imageHostAddress])
+
+  // 2 seconds after last update (not necessarily this call), issue a save
+  const delayedSaveAfterLastEdit = useCallback(contentToSave => {
+    const delay = 2000
+    lastUpdate = Date.now()
+    setTimeout(function(){
+      if (Date.now() - lastUpdate > delay - 100) {
+        var strippedContent = stripContentFormat(contentToSave)
+        saveUserContent(username, strippedContent, backendAddress, function(){
+          setSaved(true)
+        })
+      }
+    }, delay)
+  }, [backendAddress, stripContentFormat, username])
+
+  const isContentLocked = useCallback(index => {
+    // N.B: content outside of the array is said to be locked also
+    if (index < 0 || index >= content.length) {
+      return true
+    }
+    return content[index].locked
+  }, [content])
 
   // Universal keyDown handler - used for moving selected item
-  function handleKeyDown(e) {
+  const handleKeyDown = useCallback(e => {
     // On ESC, deselect items and close edit page
     if (e.keyCode === ESC_KEY) {
       setSelectedIndex(NONE_INDEX)
@@ -161,7 +221,21 @@ const App = () => {
         window.scrollTo(0, middleScrollPoint)
       }
     }
-  }
+  }, [content, delayedSaveAfterLastEdit, isContentLocked, selectedIndex])
+
+  // ==========================================================================
+
+  useEffect(() => {
+    if (SELF_BACKEND) {
+      // Populate state with list of users
+      listUsers(backendAddress, users => {
+        setUsers(users)
+      })
+    }
+
+    document.addEventListener("keydown", handleKeyDown, false)
+    return () => document.removeEventListener("keydown", handleKeyDown, false)
+  }, [backendAddress, handleKeyDown])
 
   function formatContent(content) {
     // Add backend host address
@@ -196,63 +270,8 @@ const App = () => {
     })
   }
 
-  function stripContentFormat(formattedContent) {
-    // Remove backend host address
-    var newContent = [...formattedContent]
-    var imageHostPrefix = getFormattedAddress(imageHostAddress) + '/'
-
-    return newContent.map(c => {
-      var contentItem = {...c}
-      if (contentItem.mediaType === 'image' || contentItem.mediaType === 'video') {
-        contentItem.media = contentItem.media.replace(imageHostPrefix, '')
-        if (contentItem.mediaType === 'video') {
-          contentItem.thumbnail = contentItem.thumbnail.replace(imageHostPrefix, '')
-        }
-      } else if (contentItem.mediaType === 'gallery') {
-        contentItem.media = contentItem.media.map(galleryItem => {
-          if (galleryItem.mediaType === 'image') {
-            return {
-              'media': galleryItem.media.replace(imageHostPrefix, ''),
-              'mediaType': 'image'
-            }
-          } else if (galleryItem.mediaType === 'video') {
-            return {
-              'media': galleryItem.media.replace(imageHostPrefix, ''),
-              'mediaType': 'video',
-              'thumbnail': galleryItem.thumbnail.replace(imageHostPrefix, ''),
-            }
-          }
-          throw new Error("Unknown media type")
-        })
-      }
-      return contentItem
-    })
-  }
-
-  // 2 seconds after last update (not necessarily this call), issue a save
-  function delayedSaveAfterLastEdit(contentToSave) {
-    const delay = 2000
-    lastUpdate = Date.now()
-    setTimeout(function(){
-      if (Date.now() - lastUpdate > delay - 100) {
-        var strippedContent = stripContentFormat(contentToSave)
-        saveUserContent(username, strippedContent, backendAddress, function(){
-          setSaved(true)
-        })
-      }
-    }, delay)
-  }
-
   function deselectSelectedItem() {
     setSelectedIndex(NONE_INDEX)
-  }
-
-  function isContentLocked(index) {
-    // N.B: content outside of the array is said to be locked also
-    if (index < 0 || index >= content.length) {
-      return true
-    }
-    return content[index].locked
   }
 
   // Set all content items at and above the given index to locked
@@ -445,6 +464,16 @@ const App = () => {
     return username === EMPTY_USER || !saved || uploading || editingIndex !== NONE_INDEX
   }
 
+  function getHosts(backendLocation) {
+    var ports = getBackendPorts()
+    var backend = backendLocation + ':' + ports.backend
+    var imageHost = backendLocation + ':' + ports.imageHost
+    return {
+      'backend': backend,
+      'imageHost': imageHost
+    }
+  }
+
 
 
 
@@ -481,33 +510,33 @@ const App = () => {
   var topBar = (
     <div className={classes.topBar}>
       <Grid container className={classes.adminBar}>
-        <Grid item>
-          <TextField
-            style={{width:'auto'}}
-            className={classes.textField}
-            label="Backend address"
-            disabled={uploading || editingIndex !== NONE_INDEX}
-            onKeyDown={
-              function(e){
-                if (e.keyCode === ENTER_KEY) {
-                  var ports = getBackendPorts()
-                  var backendAddress = e.target.value + ':' + ports.backend
-                  var imageHostAddress = e.target.value + ':' + ports.imageHost
-                  setBackendAddress(backendAddress)
-                  setImageHostAddress(imageHostAddress)
+        { SELF_BACKEND ? <div></div> :
+          <Grid item>
+            <TextField
+              style={{width:'auto'}}
+              className={classes.textField}
+              label="Backend address"
+              disabled={uploading || editingIndex !== NONE_INDEX}
+              onKeyDown={
+                function(e){
+                  if (e.keyCode === ENTER_KEY) {
+                    const hosts = getHosts(e.target.value)
+                    setBackendAddress(hosts.backend)
+                    setImageHostAddress(hosts.imageHost)
 
-                  // Populate state with list of users
-                  listUsers(backendAddress, function(users){
-                    setUsers(users)
-                  })
-                }
-              }}
-            onFocus={function(e){
-              // Deselect item on focus so that arrow key events only affect the input
-              deselectSelectedItem()
-            }}
-          />
-        </Grid>
+                    // Populate state with list of users
+                    listUsers(hosts.backend, users => {
+                      setUsers(users)
+                    })
+                  }
+                }}
+                onFocus={function(e){
+                  // Deselect item on focus so that arrow key events only affect the input
+                  deselectSelectedItem()
+                }}
+              />
+          </Grid>
+        }
         <Grid item style={{marginLeft:8}}>
           <FormControl style={{minWidth: 120, verticalAlign: 'bottom', }}>
             <InputLabel id='account-select-label'>Account</InputLabel>
