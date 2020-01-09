@@ -38,6 +38,12 @@ const useStyles = makeStyles(theme => ({
   },
   snackbarInfo: {
     backgroundColor: theme.palette.primary.main
+  },
+  snackbarSuccess: {
+    backgroundColor: theme.palette.success.main
+  },
+  snackbarError: {
+    backgroundColor: theme.palette.error.main
   }
 }))
 

@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 
-import { withSnackbar } from 'notistack'
+import { useSnackbar } from 'notistack'
 
 import useStyles from './style'
 
@@ -18,9 +18,11 @@ import {
   Close as CloseIcon
 } from '@material-ui/icons'
 
-const EditPage = ({media, mediaType, caption, saveCaption, closePage, setGalleryItemAsGalleryHead, deleteImage, opened, enqueueSnackbar}) => {
+const EditPage = ({media, mediaType, caption, saveCaption, closePage, setGalleryItemAsGalleryHead, deleteImage, opened}) => {
 
   const classes = useStyles()
+
+  const { enqueueSnackbar } = useSnackbar()
 
   const [text, setText] = useState(caption)
 
@@ -126,4 +128,4 @@ const EditPage = ({media, mediaType, caption, saveCaption, closePage, setGallery
   )
 }
 
-export default withSnackbar(EditPage)
+export default EditPage

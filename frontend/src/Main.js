@@ -24,7 +24,6 @@ import {
 import { Delete as DeleteIcon } from '@material-ui/icons'
 
 import ImageSquare from './components/imageSquare/ImageSquare'
-import StatusMessage from './components/statusMessage/StatusMessage'
 import EditPage from './components/editPage/EditPage'
 import Dropzone from './components/dropzone/Dropzone'
 
@@ -46,7 +45,6 @@ require('dotenv').config()
 
 const SELF_BACKEND = process.env.REACT_APP_SELF_BACKEND === 'true'
 
-console.log(SELF_BACKEND);
 const HOSTNAME = window.location.hostname
 
 const NUM_COLS = 3
@@ -108,10 +106,12 @@ function downloadUrl(url) {
   })
 }
 
-const App = () => {
+const Main = (enqueueSnackbar) => {
   const classes = useStyles()
 
   const autoHosts = getHosts(HOSTNAME)
+
+  const addSnackbar = enqueueSnackbar.enqueueSnackbar
 
   const [backendAddress, setBackendAddress] = useState(SELF_BACKEND ? autoHosts.backend : null)
   const [imageHostAddress, setImageHostAddress] = useState(SELF_BACKEND ? autoHosts.imageHost : null)
@@ -121,7 +121,6 @@ const App = () => {
   const [content, setContent] = useState([])
   const [username, setUsername] = useState(EMPTY_USER)
   const [saved, setSaved] = useState(true)
-  const [statusMessages, setStatusMessages] = useState([])
   const [uploading, setUploading] = useState(false)
   const [uploadPercent, setUploadPercent] = useState(0)
   const [galleryUpload, setGalleryUpload] = useState(false)
@@ -325,9 +324,9 @@ const App = () => {
     if (andLock) {
       // For normal 'next' usage, lock item
       lockContentAfterIndex(index)
-      reportStatusMessage("Downloaded item, copied caption to clipboard and locked item", true)
+      addSnackbar("Downloaded item, copied caption to clipboard and locked item", {variant: 'info'})
     } else {
-      reportStatusMessage("Downloaded item and copied caption to clipboard", true)
+      addSnackbar("Downloaded item and copied caption to clipboard", {variant: 'info'})
     }
   }
 
@@ -390,17 +389,6 @@ const App = () => {
     delayedSaveAfterLastEdit(newContent)
   }
 
-  // Report a status message to the screen
-  function reportStatusMessage(messageText, positive) {
-    // Use previousState so that multiple updates are not lost
-    setStatusMessages(prevStatusMessages =>
-      [
-        {'text': messageText, 'positive': positive},
-        ...prevStatusMessages
-      ]
-    )
-  }
-
   function uploadProgressUpdate(progressEvent) {
     var progressPercent = progressEvent.loaded / progressEvent.total * 100
     setUploadPercent(progressPercent)
@@ -408,9 +396,9 @@ const App = () => {
 
   function uploadCompleteCallback(res) {
     if (!res.ok) {
-      reportStatusMessage("Failed to upload, please try again", false)
+      addSnackbar("Failed to upload, please try again", {variant: 'error'})
     } else {
-      reportStatusMessage(res.text, true)
+      addSnackbar(res.text, {variant: 'success'})
       // Display newly uploaded content
       getUserContent(username, backendAddress, function(incomingContent) {
         setContent(formatContent(incomingContent))
@@ -426,13 +414,13 @@ const App = () => {
     var disallowedFiles = allowingFiles.fail
 
     // Report disallowed files
-    disallowedFiles.forEach(f => reportStatusMessage("Could not upload \"" + f.name + "\" - unsupported type", false))
+    disallowedFiles.forEach(f => addSnackbar("Could not upload \"" + f.name + "\" - unsupported type", {variant: 'error'}))
 
     // N.B: Content must be saved before upload - enforced by button disabled
     if (validFiles.length > 0) {
       if (galleryUpload && validFiles.length > 1) {
         if (validFiles.length > MAX_IN_GALLERY) {
-          reportStatusMessage("Cannot create gallery of more than " + MAX_IN_GALLERY + " items", false)
+          addSnackbar("Cannot create gallery of more than " + MAX_IN_GALLERY + " items", {variant: 'error'})
           return
         }
         uploadUserGallery(
@@ -601,7 +589,7 @@ const App = () => {
             onClick={function() {
               var toDownloadIndex = selectedIndex === NONE_INDEX ? getNextDownloadIndex() : selectedIndex
               if (toDownloadIndex === -1) {
-                reportStatusMessage("No next item available", false)
+                addSnackbar("No next item available", {variant: 'error'})
                 return
               }
               saveContentItemToDevice(toDownloadIndex, selectedIndex === NONE_INDEX)
@@ -611,21 +599,10 @@ const App = () => {
           </Button>
         </Grid>
       </Grid>
-
-      <Container>
-        {statusMessages.map((message, index) =>
-          <StatusMessage
-            key={index}
-            text={message.text}
-            positive={message.positive}
-            handleDismiss={function(){
-              setStatusMessages(statusMessages.filter((m, i) => i !== index))
-            }}
-          />
-        )}
-      </Container>
     </div>
   )
+
+  console.log(content);
 
   // N.B: hide content whilst uploading to prevent race conditions
   var gridContent = (
@@ -654,8 +631,9 @@ const App = () => {
             spacing={0}
           >
             {content.map((c, index) => (
-              <GridListTile key={index} cols={1}>
+              <GridListTile key={`${index}${username}`} cols={1}>
                 <ImageSquare
+                  key={`${index}${username}image`}
                   innerRef={selectedIndex === index ? selectedRef : null}
                   media={c.media}
                   mediaType={c.mediaType}
@@ -760,4 +738,4 @@ const App = () => {
   )
 }
 
-export default App
+export default Main

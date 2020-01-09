@@ -2,12 +2,17 @@ import React from 'react'
 
 import { ThemeProvider } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
-import { SnackbarProvider } from 'notistack'
+import { SnackbarProvider, useSnackbar } from 'notistack'
 import theme from './theme'
 
 import useStyles from './style'
 
 import Main from './Main'
+
+const Wrapped = () => {
+  const { enqueueSnackbar } = useSnackbar()
+  return (<Main enqueueSnackbar={enqueueSnackbar} />)
+}
 
 const App = () => {
 
@@ -23,7 +28,7 @@ const App = () => {
             variantInfo: classes.snackbarInfo
           }}
         >
-          <Main />
+          <Wrapped />
         </SnackbarProvider>
       </ThemeProvider>
     </div>
