@@ -1,5 +1,7 @@
 import React, {useState} from 'react'
 
+import { useSnackbar } from 'notistack'
+
 import useStyles from './style'
 
 import Carousel from '../carousel/Carousel.js'
@@ -19,6 +21,8 @@ import {
 const EditPage = ({media, mediaType, caption, saveCaption, closePage, setGalleryItemAsGalleryHead, deleteImage, opened}) => {
 
   const classes = useStyles()
+
+  const { enqueueSnackbar } = useSnackbar()
 
   const [text, setText] = useState(caption)
 
@@ -110,7 +114,10 @@ const EditPage = ({media, mediaType, caption, saveCaption, closePage, setGallery
             <Button
               variant='contained'
               color='primary'
-              onClick={() => saveCaption(text)}
+              onClick={() => {
+                saveCaption(text)
+                enqueueSnackbar('Saving caption', {variant: 'info'})
+              }}
             >
               Save
             </Button>

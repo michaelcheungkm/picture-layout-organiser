@@ -20,7 +20,7 @@ export default createMuiTheme({
       main: '#00C851',
       contrastText: '#ffffff'
     },
-    danger: {
+    error: {
       light: '#ff8888',
       dark: '#CC0000',
       main: '#ff4444',

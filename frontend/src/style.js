@@ -35,6 +35,15 @@ const useStyles = makeStyles(theme => ({
   },
   statusText: {
     marginBottom: theme.spacing(2)
+  },
+  snackbarInfo: {
+    backgroundColor: theme.palette.primary.main
+  },
+  snackbarSuccess: {
+    backgroundColor: theme.palette.success.main
+  },
+  snackbarError: {
+    backgroundColor: theme.palette.error.main
   }
 }))
 

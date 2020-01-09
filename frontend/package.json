@@ -1,5 +1,5 @@
 {
-  "name": "picture-layout-organiser-frontend",
+  "name": "picture-layout-organiser",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -8,6 +8,7 @@
     "@material-ui/styles": "^4.7.1",
     "axios": "^0.19.0",
     "dotenv": "^8.1.0",
+    "notistack": "^0.9.7",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-scripts": "3.1.1",
