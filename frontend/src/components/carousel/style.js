@@ -12,7 +12,7 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(2)
   },
   warningMessage: {
-    color: theme.palette.danger.dark,
+    color: theme.palette.error.dark,
     textAlign: 'center',
     width: '100%',
     height: '100%'
