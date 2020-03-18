@@ -1,8 +1,10 @@
 # Backend
 
+## Configuration
+
 Edit the file `backend/run.sh` to change the data directory location - this is where all uploaded media content will be stored. By default this is the folder `.plo` in the home directory
 
-If required edit the port number in `run.sh`. This should match the port number entered in the frontend config.
+If required edit the port number in `run.sh`; the default is 8008. This should match the port number entered in the frontend config.
 
 * Requires `ffmpeg`  and `mongo` to be installed.
 * Ensure that the mongo data store path is set. This can be done with `mongod --dbpath <location>`. It is recommended to use `/data/db`.
@@ -21,13 +23,20 @@ Saves all stored content to `export.zip`
 Restores all content from a previous export
 Usage: `./plo-import export.zip`
 
+### `plo-compress-existing`
+For existing applications prior to the introduction of image compression.
+Compresses existing images in the application to be in line with newer versions.
+Usage: `./plo-import export.zip`
+
 
 # Frontend
+
+## Configuration
 Before running this project, create a `.env` file in the frontend directory with the contents:
 
 ```
-  REACT_APP_BACKEND_PORT_BASE=<backend port number>
-  REACT_APP_SELF_BACKEND=<true|false>
+REACT_APP_BACKEND_PORT_BASE=<backend port number>
+REACT_APP_SELF_BACKEND=<true|false>
 ```
 
 * The default backend port number is 8008 (N.B: The backend actually uses two successive ports starting with the given port number).

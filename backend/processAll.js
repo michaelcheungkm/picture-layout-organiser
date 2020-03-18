@@ -5,6 +5,11 @@ const NUM_HASHES = 50
 
 const args = process.argv.slice(2)
 
+if (args.length != 1) {
+  console.log('Usage: plo-compress-existing <target directory>')
+  process.exit(1)
+}
+
 const directory = args[0]
 
 try {

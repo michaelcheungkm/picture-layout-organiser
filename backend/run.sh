@@ -59,5 +59,19 @@ if [ $1 == "--import" ]; then
 fi
 
 
+# Compress Existing
+if [ $1 == "--compress-existing" ]; then
+
+  if [ -d "$DATA_DIRECTORY" ]; then
+    node processAll.js "$DATA_DIRECTORY";
+    exit $?;
+  else
+    echo "$DATA_DIRECTORY not found";
+    exit 1;
+  fi
+
+fi
+
+
 # Default run
 bash ./serveData.sh & nodemon index.js &
