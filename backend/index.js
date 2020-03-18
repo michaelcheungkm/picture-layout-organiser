@@ -5,6 +5,7 @@ const fs = require('fs')
 const multer = require('multer')
 
 const mongoManager = require('./mongoManager.js')
+const imageProcessing = require('./imageProcessing.js')
 
 const app = express()
 const API_PORT = process.env.PORT_BASE
@@ -96,6 +97,8 @@ app.post('/:username/addUserMedia', (req, res) => {
     // Ensure to wait for addUserMedia to finish
     await mongoManager.addUserMedia(username, req.files, DATA_DIRECTORY)
 
+    await compressImages(req.files)
+
     return res.send("Successfully uploaded " + req.files.length + " "
       + (req.files.length > 1 ? "files" : "file"))
     }
@@ -116,6 +119,8 @@ app.post('/:username/addUserGallery', (req, res) => {
     // Ensure to wait for addUserMedia to finish
     await mongoManager.addUserGallery(username, req.files, DATA_DIRECTORY)
 
+    await compressImages(req.files)
+
     return res.send("Successfully uploaded " + req.files.length + " "
       + (req.files.length > 1 ? "files" : "file") + " to gallery")
     }
@@ -123,6 +128,14 @@ app.post('/:username/addUserGallery', (req, res) => {
 })
 
 /*----------------------------------------------------------------------------*/
+
+async function compressImages(files) {
+  files = files.map(f => DATA_DIRECTORY + "/" + f.filename)
+  for (var i = 0; i < files.length; i++) {
+    const file = files[i]
+    await imageProcessing.processImageSync(file)
+  }
+}
 
 // Delete files that are no longer being referenced
 async function garbageCollect() {
