@@ -16,7 +16,12 @@ function processImage(input, cb, overwrite = true) {
     const fileExt = split[2]
 
     const size = img.bitmap.width * img.bitmap.height
-    const factor = Math.min(Math.sqrt(MAX_SIZE / size), 1)
+
+    if (size < MAX_SIZE) {
+      return
+    }
+
+    const factor = Math.sqrt(MAX_SIZE / size)
     img
       .scale(factor)
       .quality(QUALITY)
