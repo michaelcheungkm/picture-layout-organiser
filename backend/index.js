@@ -132,7 +132,9 @@ async function garbageCollect() {
   var allFiles = fs.readdirSync(DATA_DIRECTORY)
   // Delete all files (except the manager) that are not referenced
   allFiles
+    // The next line is not strictly needed but is kept for backwards compatibility
     .filter(f => f !== 'manager.json')
+    // ---------------------------------------
     .filter(f => !allMedia.includes(f))
     .forEach(f => fs.unlinkSync(DATA_DIRECTORY + "/" + f))
 }
