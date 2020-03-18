@@ -5,6 +5,8 @@ const MAX_SIZE = 16 * 1000 * 1000
 // 80% Quality
 const QUALITY = 75
 
+const EPSILON = 0.01
+
 function processImage(input, cb, overwrite = true) {
   jimp.read(input, (err, img) => {
     if (err) {
@@ -17,7 +19,7 @@ function processImage(input, cb, overwrite = true) {
 
     const size = img.bitmap.width * img.bitmap.height
 
-    if (size < MAX_SIZE) {
+    if (size < EPSILON * MAX_SIZE) {
       return
     }
 
@@ -41,7 +43,7 @@ async function processImageSync(input, overwrite = true) {
 
       const size = img.bitmap.width * img.bitmap.height
 
-      if (size < MAX_SIZE) {
+      if (size < EPSILON * MAX_SIZE) {
         return
       }
 
