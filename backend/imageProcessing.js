@@ -32,6 +32,29 @@ function processImage(input, cb, overwrite = true) {
   })
 }
 
+async function processImageSync(input, overwrite = true) {
+  await jimp.read(input)
+    .then(img => {
+      const split = input.match(/(.*)\.(.*)/)
+      const filename = split[1]
+      const fileExt = split[2]
+
+      const size = img.bitmap.width * img.bitmap.height
+
+      if (size < MAX_SIZE) {
+        return
+      }
+
+      const factor = Math.sqrt(MAX_SIZE / size)
+      return img
+        .scale(factor)
+        .quality(QUALITY)
+        .write(filename + (overwrite ? '' : '-processed') + '.' + fileExt)
+    })
+    .catch(err => console.error(err))
+}
+
 module.exports = {
-  processImage
+  processImage,
+  processImageSync
 }
