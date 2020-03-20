@@ -418,6 +418,10 @@ const Main = (enqueueSnackbar) => {
 
     // N.B: Content must be saved before upload - enforced by button disabled
     if (validFiles.length > 0) {
+      // Will upload
+      setUploading(true)
+      setUploadPercent(0)
+
       if (galleryUpload && validFiles.length > 1) {
         if (validFiles.length > MAX_IN_GALLERY) {
           addSnackbar("Cannot create gallery of more than " + MAX_IN_GALLERY + " items", {variant: 'error'})
@@ -433,8 +437,6 @@ const Main = (enqueueSnackbar) => {
           uploadCompleteCallback
         )
       } else {
-        setUploading(true)
-        setUploadPercent(0)
         uploadUserMedia(
           validFiles,
           username,
