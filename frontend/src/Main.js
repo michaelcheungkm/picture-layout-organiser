@@ -390,8 +390,11 @@ const Main = (enqueueSnackbar) => {
   }
 
   function uploadProgressUpdate(progressEvent) {
-    var progressPercent = progressEvent.loaded / progressEvent.total * 100
-    setUploadPercent(progressPercent)
+    const progressPercent = progressEvent.loaded / progressEvent.total * 100
+
+    // Scale to 95% since image processing also needs to happen
+    const scaledTo = 0.95
+    setUploadPercent(progressPercent * scaledTo)
   }
 
   function uploadCompleteCallback(res) {
@@ -406,6 +409,8 @@ const Main = (enqueueSnackbar) => {
     }
     // Indicate to state that uploading is finished
     setUploading(false)
+    // Everything (including image processing is now complete)
+    setUploadPercent(100)
   }
 
   function handleFilesSelected(files) {
