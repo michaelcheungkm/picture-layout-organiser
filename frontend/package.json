@@ -9,9 +9,9 @@
     "axios": "^0.19.2",
     "dotenv": "^8.2.0",
     "notistack": "^0.9.9",
-    "react": "^16.13.0",
-    "react-dom": "^16.13.0",
-    "react-scripts": "^3.4.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-scripts": "^3.4.1",
     "reactstrap": "^8.4.1"
   },
   "scripts": {
