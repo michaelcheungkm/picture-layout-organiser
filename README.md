@@ -1,3 +1,34 @@
+# About
+
+A picture organiser for grid layouts such as [Instagram](https://instagram.com).
+
+Features include:
+* Drag-and-drop upload
+* Reordering
+* Captioning
+* Video Support
+* Gallery Support
+* One-click download
+* Lock organisation to keep track of which photos have been posted
+
+## Screenshots
+<img src="screenshots/home.png" />
+<br /><br />
+<img src="screenshots/home2.png" />
+<br /><br />
+<img src="screenshots/changeaccounts.png" />
+<br /><br />
+<img src="screenshots/phone-home.png" width=45% />
+<img src="screenshots/phone-selected.png" width=45% />
+<br /><br />
+<img src="screenshots/selected.png" />
+<br /><br />
+<img src="screenshots/filedrag.png" />
+<br /><br />
+<img src="screenshots/uploading.png" />
+<br /><br />
+<img src="screenshots/uploaded.png" />
+
 # Backend
 
 ## Configuration
@@ -20,12 +51,14 @@ Runs the backend application
 Saves all stored content to `export.zip`
 
 ### `plo-import`
-Restores all content from a previous export
+Restores all content from a previous export.
+
 Usage: `./plo-import export.zip`
 
 ### `plo-compress-existing`
 For existing applications prior to the introduction of image compression.
 Compresses existing images in the application to be in line with newer versions.
+
 Usage: `./plo-import export.zip`
 
 
