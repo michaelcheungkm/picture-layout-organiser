@@ -18,8 +18,8 @@ Features include:
 <br /><br />
 <img src="screenshots/changeaccounts.png" />
 <br /><br />
-<img src="screenshots/phone-home.png" width=45% />
-<img src="screenshots/phone-selected.png" width=45% />
+<img src="screenshots/phone-home.png" width=30% />
+<img src="screenshots/phone-selected.png" width=30% />
 <br /><br />
 <img src="screenshots/selected.png" />
 <br /><br />
@@ -29,6 +29,21 @@ Features include:
 <br /><br />
 <img src="screenshots/uploaded.png" />
 
+# Production launch
+1. Configure the application following the configuration steps for the frontend and the backend.
+
+2. Run the following:
+
+  ```
+  npm install --prefix frontend
+  npm install --prefix backend
+  bash launch.sh
+  ```
+
+  N.B: The launch script requires `screen` to be installed.
+
+  The frontend and backend will now be run in detached screen terminals. You can find them by using `screen -r "plo-frontend"` and `screen -r "plo-backend"` respectively.
+
 # Backend
 
 ## Configuration
@@ -37,7 +52,7 @@ Edit the file `backend/run.sh` to change the data directory location - this is w
 
 If required edit the port number in `run.sh`; the default is 8008. This should match the port number entered in the frontend config.
 
-* Requires `ffmpeg`  and `mongo` to be installed.
+* Requires `bash`, `ffmpeg`  and `mongo` to be installed.
 * Ensure that the mongo data store path is set. This can be done with `mongod --dbpath <location>`. It is recommended to use `/data/db`.
 
 <hr>

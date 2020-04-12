@@ -1,8 +1,8 @@
 export PORT_BASE=8008
-export DATA_DIRECTORY=~/.plo/
+export DATA_DIRECTORY=/hdd/.plo/
 
 # Export
-if [ $1 == "--export" ]; then
+if [ "$1" == "--export" ]; then
   # Only proceed if this will not override an existing export
   if test -f "export.zip"; then
     echo "Cannot create export as export.zip already exists";
@@ -33,7 +33,7 @@ fi
 
 
 # Import
-if [ $1 == "--import" ]; then
+if [ "$1" == "--import" ]; then
   # Only proceed if this does not override an existing directory
   if test -d "export"; then
     echo "Cannot import as export directory already exists";
@@ -60,7 +60,7 @@ fi
 
 
 # Compress Existing
-if [ $1 == "--compress-existing" ]; then
+if [ "$1" == "--compress-existing" ]; then
 
   if [ -d "$DATA_DIRECTORY" ]; then
     node processAll.js "$DATA_DIRECTORY";
@@ -74,4 +74,4 @@ fi
 
 
 # Default run
-bash ./serveData.sh & nodemon index.js &
+bash ./serveData.sh & node index.js;
