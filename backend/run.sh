@@ -1,5 +1,5 @@
 export PORT_BASE=8008
-export DATA_DIRECTORY=/hdd/.plo/
+export DATA_DIRECTORY=~.plo/
 
 # Export
 if [ "$1" == "--export" ]; then
