@@ -18,8 +18,9 @@ Features include:
 <br /><br />
 <img src="screenshots/changeaccounts.png" />
 <br /><br />
-<img src="screenshots/phone-home.png" width=24% />
-<img src="screenshots/phone-selected.png" width=24% />
+<p float="center">
+<img src="screenshots/phone-home.png" width=45% /><img src="screenshots/phone-selected.png" width=45% />
+</p>
 <br /><br />
 <img src="screenshots/selected.png" />
 <br /><br />
