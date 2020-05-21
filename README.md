@@ -18,8 +18,8 @@ Features include:
 <br /><br />
 <img src="screenshots/changeaccounts.png" />
 <br /><br />
-<img src="screenshots/phone-home.png" width=30% />
-<img src="screenshots/phone-selected.png" width=30% />
+<img src="screenshots/phone-home.png" width=24% />
+<img src="screenshots/phone-selected.png" width=24% />
 <br /><br />
 <img src="screenshots/selected.png" />
 <br /><br />
@@ -30,7 +30,7 @@ Features include:
 <img src="screenshots/uploaded.png" />
 
 # Production launch
-1. Configure the application following the configuration steps for the frontend and the backend.
+1. Configure the application following the [configuration](#configuration) steps for the frontend and the backend.
 
 2. Run the following:
 
@@ -40,9 +40,9 @@ Features include:
   bash launch.sh
   ```
 
-  N.B: The launch script requires `screen` to be installed.
+  N.B: The launch script requires `tmux` to be installed.
 
-  The frontend and backend will now be run in detached screen terminals. You can find them by using `screen -r "plo-frontend"` and `screen -r "plo-backend"` respectively.
+  The frontend and backend will now be run in detached tmux sessions. You can reattach them with `tmux a -t plo-frontend` and `tmux a -t plo-backend` respectively.
 
 # Backend
 
