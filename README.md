@@ -31,7 +31,7 @@ Features include:
 <img src="screenshots/uploaded.png" />
 
 # Production launch
-1. Configure the application following the [configuration](#configuration) steps for the frontend and the backend.
+1. Configure the application following the [frontend](#front-config) and [backend](#back-config) configuration steps.
 
 2. Run the following:
 
@@ -47,6 +47,7 @@ Features include:
 
 # Backend
 
+<a name="back-config"></a>
 ## Configuration
 
 Edit the file `backend/run.sh` to change the data directory location - this is where all uploaded media content will be stored. By default this is the folder `.plo` in the home directory
@@ -80,6 +81,7 @@ Usage: `./plo-import export.zip`
 
 # Frontend
 
+<a name="front-config"></a>
 ## Configuration
 Before running this project, create a `.env` file in the frontend directory with the contents:
 
