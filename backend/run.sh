@@ -1,29 +1,32 @@
-export PORT_BASE=8008
-export DATA_DIRECTORY=~.plo/
+#!/usr/bin/env bash
+
+export PORT_BASE=${PORT_BASE:-"8008"}
+export DATA_DIRECTORY=${DATA_DIRECTORY:-"~.plo/"}
+export MONGODB_LOCATION=${MONGODB_LOCATION:-"127.0.0.1:27017"}
 
 # Export
 if [ "$1" == "--export" ]; then
   # Only proceed if this will not override an existing export
-  if test -f "export.zip"; then
-    echo "Cannot create export as export.zip already exists";
+  if test -f "$2"; then
+    echo "Cannot create export as $2 already exists";
     exit 1;
   fi
 
   # Only proceed if this does not override an existing directory
-  mkdir export
-  if [ $? != 0 ]; then
+
+  if ! mkdir "export"; then
     echo "Cannot create export as export working directory already exists";
     exit 2;
   fi
 
   # At this point there are no name clashes
-  cd export
-  mongoexport --collection=users --db=pictureLayoutOrganiser --out=users.json;
-  mongoexport --collection=content --db=pictureLayoutOrganiser --out=content.json;
+  pushd "export" || exit 2;
+  mongoexport --host="$MONGODB_LOCATION" --collection=users --db=pictureLayoutOrganiser --out=users.json;
+  mongoexport --host="$MONGODB_LOCATION" --collection=content --db=pictureLayoutOrganiser --out=content.json;
   cp -r "$DATA_DIRECTORY" "./media";
-  cd ..;
-  zip -r "export.zip" "export";
-  printf "\nSuccessfully exported to $(pwd)/export.zip\n";
+  popd || exit 2;
+  zip -r "$2" "export";
+  printf "\nSuccessfully exported to $2\n";
 
   # Cleanup
   rm -rf "export/";
@@ -41,10 +44,10 @@ if [ "$1" == "--import" ]; then
   fi
 
   unzip "$2"
-  cd "export";
+  pushd "export" || exit 2;
 
-  mongoimport --collection=users --db=pictureLayoutOrganiser --file=users.json;
-  mongoimport --collection=content --db=pictureLayoutOrganiser --file=content.json;
+  mongoimport --host="$MONGODB_LOCATION" --collection=users --db=pictureLayoutOrganiser --file=users.json;
+  mongoimport --host="$MONGODB_LOCATION" --collection=content --db=pictureLayoutOrganiser --file=content.json;
 
   # If data directory does not already exist, make it
   mkdir "$DATA_DIRECTORY" &> /dev/null;
@@ -53,7 +56,7 @@ if [ "$1" == "--import" ]; then
   printf "\nSuccessfully imported\n";
 
   # Cleanup
-  cd ..;
+  popd || exit 2;
   rm -rf "export/";
   exit 0;
 fi
