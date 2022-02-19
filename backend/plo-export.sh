@@ -1,1 +1,1 @@
-bash run.sh --export
+bash run.sh --export $1
