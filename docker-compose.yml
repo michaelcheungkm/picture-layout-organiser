@@ -11,6 +11,7 @@ services:
       start_period: 5s
     volumes:
       - mongo-data:/data/db
+      - mongo-config:/data/configdb
 
   backend:
     build:
@@ -41,4 +42,5 @@ services:
 
 volumes:
   mongo-data:
+  mongo-config:
   media-data:
